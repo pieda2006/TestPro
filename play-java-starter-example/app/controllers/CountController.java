@@ -3,9 +3,12 @@ package controllers;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.Counter;
-
+import play.mvc.Http.RequestBody;
+import play.libs.Json;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * This controller demonstrates how to use dependency injection to
@@ -30,7 +33,11 @@ public class CountController extends Controller {
      * requests by an entry in the <code>routes</code> config file.
      */
     public Result count() {
-        return ok(Integer.toString(counter.nextCount()));
+        RequestBody body = request().body();
+        JsonNode jsonNode = body.asJson();
+
+        //return ok("Got body : \n" + jsonNode.findPath("PlanID").textValue());
+        return ok("test ok");
     }
 
 }
