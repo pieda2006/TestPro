@@ -1,0 +1,22 @@
+{
+  "ConditionType" : 1,
+  "MessageName" : "PolicyCounter",
+  "Condition" : {
+    "OperationType" : 1,
+    "Operation" : [
+        {
+          "OperationType" : 2,
+          "PramName" : ["PID"],
+          "PramType":1,
+          "Operation" : null
+        },
+        {
+          "OperationType" : 3,
+          "PramName" : ["PID"],
+          "PramType":1,
+          "Operation" : null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "ActionType" : 1,
+  "Action" : {
+    "OperationType" : 1,
+    "ParamName" : ["ActionID","ChargingRuleName"],
+    "ParamValue" : ["ActionID","ChargingRuleName"],
+    "Operation" : null
+  }
+}

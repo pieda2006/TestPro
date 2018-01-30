@@ -1,0 +1,15 @@
+{
+    "MaxFactNum" : 10,
+    "MaxFactTypeNum" : 10,
+    "MaxConditionNum" : 100,
+    "MaxConditionDepth" : 10,
+    "MaxServicePlanDepth" : 10,
+    "EvaluateObjectNum" : 2,
+    "ExecuteObjectNum" : 10,
+    "MaxActionNum" : 10,
+    "ConditionFileName" : ["BucketStatus.json","Schedule.json"],
+    "ServicePlanName" : ["100","10"],
+    "ActionFileName" : ["Action.json"],
+    "ServicePlanMessage" : "SubscrInfo",
+    "PlanName" : ["PlanID"]
+}

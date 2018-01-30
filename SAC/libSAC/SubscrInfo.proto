@@ -1,0 +1,7 @@
+syntax = "proto3";
+package SAC;
+
+message SubscrInfo {
+    int32 PlanID = 1;
+    int32 Activate = 2;
+}
