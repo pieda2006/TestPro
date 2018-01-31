@@ -3,6 +3,7 @@ package controllers;
 import java.sql.ResultSet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.*;
 
 class ServicePlanFactory {
 
@@ -44,5 +45,40 @@ class ServicePlanFactory {
     
     public ConditionBase createCondition(JsonNode planJson){
         
+        ConditionFactory conditionfact = null;
+        
+        conditionfact = ConditionFactory.getInstance();
+        int conditionType = planJson.findValue("ConditionType").asInt();
+
+        ConditionBase conditionBaseObj = conditionfact.getCondition(conditionType);
+
+        Map.Entry<String,JsonNode> jsonmap = null;
+        TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
+        Iterator<Map.Entry<String,JsonNode>> jsonIte = planJson.fields();
+        
+        ConditionBase conditionObj = new ConditionBase();
+        while(jsonIte.hasNext()){
+            jsonmap = jsonIte.next();
+            if(!jsonmap.getKey().equals("TrueAction") && !jsonmap.getKey().equals("FalseAction") && 
+               !jsonmap.getKey().equals("TrueNextCondition") && !jsonmap.getKey().equals("FalseNextCondition")){
+                if(jsonmap.getValue().isInt()){
+                    jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
+                } else if(jsonmap.isTextual()){
+                    jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
+                }
+            }
+        }
+        ObjectMapper objmapper = ObjectMapper();
+        JsonNode condiitonjson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
+        conditionObj.setConditionJson(condiitonjson);
+        JsonNode actionjson = null;
+        actionjson = planJson.findValue("TrueAction");
+        if(!actionjson.isNull()){
+            
+        }
+        
+        planJson.findValue("FalseAction");
+        planJson.findValue("TrueNextCondition");
+        planJson.findValue("FalseNextCondition");
     }
 }
