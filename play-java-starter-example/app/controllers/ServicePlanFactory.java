@@ -33,7 +33,7 @@ class ServicePlanFactory {
         ObjectMapper objmapper = new ObjectMapper();
         JsonNode servicePlan = null;
         ConditionBase condition = null;
-        String planName = null = result.getString(PLAN_NAME);
+        String planName = null;
         while(result.next()){
             servicePlan = objmapper.readTree(result.getBytes(PLAN_VALUE));
             condition = createCondition(servicePlan);
@@ -48,6 +48,7 @@ class ServicePlanFactory {
         ConditionFactory conditionfact = null;
         
         conditionfact = ConditionFactory.getInstance();
+        actionfact = ActionFactory.getInstance();
         int conditionType = planJson.findValue("ConditionType").asInt();
 
         ConditionBase conditionBaseObj = conditionfact.getCondition(conditionType);

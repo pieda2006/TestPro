@@ -33,9 +33,8 @@ public class ConditionFactory {
         EvaluateBase evaluateObj = null;
         while(result.next()){
             conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
-            conditionJson = conditionJson.findValue("Condition");
             condition = new ConditionBase();
-            evaluateObj = createCondition(conditionJson);
+            evaluateObj = createOperation(conditionJson);
             condition.setEvaluateObj(evaluateObj);
             int conditionID = result.getString(CONDITION_ID)
             conditionHash.put(conditionID, condition);

@@ -1,7 +1,4 @@
 {
-  "ConditionType" : 1,
-  "MessageName" : "PolicyCounter",
-  "Condition" : {
     "OperationType" : 1,
     "Operation" : [
         {
@@ -17,6 +14,4 @@
           "Operation" : null
         }
       ]
-    }
-  }
 }

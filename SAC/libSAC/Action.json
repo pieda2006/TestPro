@@ -1,9 +1,20 @@
 {
-  "ActionType" : 1,
-  "Action" : {
     "OperationType" : 1,
-    "ParamName" : ["ActionID","ChargingRuleName"],
-    "ParamValue" : ["ActionID","ChargingRuleName"],
-    "Operation" : null
-  }
+    "ParamName" : ["ChargingRuleInstall","ChargingRuleName"],
+    "ParamType" : 1,
+    "Operation" : [
+        {
+            "OperationType" : 3,
+            "ParamName" : ["ChargingRuleInstall","ChargingRuleName"],
+            "ParamType" : 1,
+        }
+    ]
+}
+
+
+{
+    "OperationType" : 2,
+    "TableName" : "SESSION",
+    "Key" : ["ActionInfo","SessionInfo","Msisdn"],
+    "Value" : ["ActionInfo","SessionInfo"]
 }
