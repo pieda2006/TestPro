@@ -1,20 +1,31 @@
 {
-    "OperationType" : 1,
-    "ParamName" : ["ChargingRuleInstall","ChargingRuleName"],
-    "ParamType" : 1,
-    "Operation" : [
-        {
-            "OperationType" : 3,
-            "ParamName" : ["ChargingRuleInstall","ChargingRuleName"],
-            "ParamType" : 1,
-        }
-    ]
+    "OperationType" : 0,
+    "TableName" : "SESSION",
+    "Key" : ["ActionInfo","SessionInfo","Msisdn"],
+    "Value" : ["ActionInfo","SessionInfo"],
+    "Operation" : null
 }
 
+{
+    "OperationType" : 1,
+    "TableName" : "SESSION",
+    "Key" : ["ActionInfo","SessionInfo","Msisdn"],
+    "Value" : ["ActionInfo","SessionInfo"],
+    "Operation" : null
+}
 
 {
     "OperationType" : 2,
-    "TableName" : "SESSION",
-    "Key" : ["ActionInfo","SessionInfo","Msisdn"],
-    "Value" : ["ActionInfo","SessionInfo"]
+    "PramName" :  ["ActionInfo","ChargingRuleName"],
+    "PramValue" : ["ActionInfo","ChargingRuleInstall"]
+    "ParamType" : 1,
+    "Operation" : null
+}
+
+{
+    "OperationType" : 3,
+    "SendTo" : ["ActionInfo","URL"],
+    "Method" : ["ActionInfo","Method"],
+    "Value" : ["ActionInfo","SendData"],
+    "Operation" : null
 }

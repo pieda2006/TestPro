@@ -26,55 +26,71 @@ class ActionFactory {
         ObjectMapper objmapper = new ObjectMapper();
         JsonNode actionJson = null;
         ActionBase action = null;
+        ExecuteBase executeObj = null;
         String actionID = null;
         while(result.next()){
             actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
-            actionJson.findValue("Action");
-            action = createOperation(actionJson);
+            action = new ActionBase();
+            for(int count = 0; actionJson.has(count); count++){
+                executeObj = createOperation(actionJson.get(count));
+                action.setOperation(executeObj);
+            }
             actionID = result.getInt(ACTION_ID)
             planHash.put(actionID, action);
         }
         retrun ServicePlanFactory_OK;
     }
+    
     public ExecuteBase createOperation(JsonNode actionJson){
         
         JsonNode operationJson = null;
-        EvaluateBase evaluateObj = null;
-        int operationType = conditionJson.findValue("OperationType").asInt();
+        ExecuteBase executeObj = null;
+        int operationType = actionJson.findValue("OperationType").asInt();
 
         switch (operationType){
-            case 0: 
-            { /*** Equals / Compare ***/
-                EvaluateCompare evaluateCompareObj = new EvaluateCompare();
-                operationJson = conditionJson.findValue("Operation");
-                evaluateCompareObj.setEvaluateObj(createOperation(operationJson.get(0)));
-                evaluateCompareObj.setEvaluateObj(createOperation(operationJson.get(1)));
-                evaluateObj = evaluateCompareObj;
+            case 0: //get DB data
+            case 1: //insert DB data
+            case 2: //update DB data
+            case 3: //delete DB data
+            {
+                ExecuteOperationDB executeDBObj = new ExecuteOperationDB();
+                executeDBObj.setTableName(actionJson.findValue("TableName"));
+                executeDBObj.setKey(actionJson.findValue("Key"));
+                executeDBObj.setValue(actionJson.findValue("Value"));
+                executeObj = executeDBObj;
                 break;
             }
-            case 2
-            case 3:
-            { /*** Or / And ***/
-                EvaluateLogical evaluateLogicalObj = new EvaluateLogical();
-                operationJson = conditionJson.findValue("Operation");
-                evaluateLogicalObj.setEvaluateObj(createOperation(operationJson.get(0)));
-                evaluateLogicalObj.setEvaluateObj(createOperation(operationJson.get(1)));
-                evaluateObj = evaluateLogicalObj;
+            case 4 //Json operation
+            {
+                ExecuteOperationJson executeJsonObj = new ExecuteOperationJson();
+                executeJsonObj.setPramName(actionJson.findValue("PramName"));
+                executeJsonObj.setPramValue(actionJson.findValue("PramValue"));
+                executeJsonObj.setParamType(actionJson.findValue("ParamType"));
+                executeObj = executeJsonObj;
                 break;
             }
-            case 4:
-            case 5:
-            { /*** Get Element/ Input ***/
-                EvaluateElement evaluateElementObj = new EvaluateElement();
-                evaluateElementObj.setParamName(conditionJson.findValue("PramName").asText);
-                evaluateElementObj.setParamType(conditionJson.findValue("PramType").asInt);
-                evaluateObj = evaluateElementObj;
+            case 5: //setdMessage
+            {
+                ExecuteSendMessage executeMessageObj = new ExecuteSendMessage();
+                executeMessageObj.setSendTo(actionJson.findValue("SendTo"));
+                executeMessageObj.setMethod(actionJson.findValue("Method"));
+                executeMessageObj.setValue(actionJson.findValue("Value"));
+                executeMessageObj.setResult(actionJson.findValue("Result"));
+                executeObj = executeMessageObj;
                 break;
             }
         }
         
-        evaluateObj.setoperationType(operationType);
+        executeObj.setoperationType(operationType);
         return evaluateObj;
     }
+
+    public ActionBase getAction(int actionType){
+        ActionBase actionObj = actionHash.get(actionType);
+        if(actionObj == null){
+            return null;
+        }
+        ActionBase retAction = new ActionBase(actionObj);
+        return retAction;
     }
 }

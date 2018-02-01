@@ -82,7 +82,7 @@ public class ConditionFactory {
         return evaluateObj;
     }
     public ConditionBase getCondition(int conditionType){
-        ConditionBase conditionObj = conditionHash().get(conditionType);
+        ConditionBase conditionObj = conditionHash.get(conditionType);
         if(conditionObj == null){
             return null;
         }

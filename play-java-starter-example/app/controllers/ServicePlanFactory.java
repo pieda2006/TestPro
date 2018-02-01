@@ -27,7 +27,11 @@ class ServicePlanFactory {
         return myinstance;
     }
     
-    public createAllServicePlan(){
+    public ConditionBase getCondition(String uri){
+        return planHash.get(uri);
+    }
+    
+    public void createAllServicePlan(){
         DataManager datamanage = DataManager.getInstance();
         ResultSet result = datamanage.getData(servicePlanTableName);
         ObjectMapper objmapper = new ObjectMapper();
@@ -40,7 +44,6 @@ class ServicePlanFactory {
             planName = result.getString(PLAN_NAME)
             planHash.put(planName, condition);
         }
-        retrun ServicePlanFactory_OK;
     }
     
     public ConditionBase createCondition(JsonNode planJson){
@@ -51,13 +54,12 @@ class ServicePlanFactory {
         actionfact = ActionFactory.getInstance();
         int conditionType = planJson.findValue("ConditionType").asInt();
 
-        ConditionBase conditionBaseObj = conditionfact.getCondition(conditionType);
+        ConditionBase conditionObj = conditionfact.getCondition(conditionType);
 
         Map.Entry<String,JsonNode> jsonmap = null;
         TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
         Iterator<Map.Entry<String,JsonNode>> jsonIte = planJson.fields();
         
-        ConditionBase conditionObj = new ConditionBase();
         while(jsonIte.hasNext()){
             jsonmap = jsonIte.next();
             if(!jsonmap.getKey().equals("TrueAction") && !jsonmap.getKey().equals("FalseAction") && 
@@ -69,17 +71,71 @@ class ServicePlanFactory {
                 }
             }
         }
-        ObjectMapper objmapper = ObjectMapper();
+        ObjectMapper objmapper = new ObjectMapper();
         JsonNode condiitonjson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
         conditionObj.setConditionJson(condiitonjson);
+        ActionBase actionObj = null;
         JsonNode actionjson = null;
+        int actionType;
+        JsonNode actionInputJson = null;
         actionjson = planJson.findValue("TrueAction");
         if(!actionjson.isNull()){
-            
+            for(int count = 0; actionjson.has(count); count++){
+                actionType = actionjson.findValue("ActionType").get(count).asInt();
+                actionObj = actionfact.getAction(actionType);
+                jsonentry = new TreeMap<String,Object>();
+                jsonIte = actionjson.fields();
+                while(jsonIte.hasNext()){
+                    jsonmap = jsonIte.next();
+                    if(!jsonmap.getKey().equals("Operation")){
+                        if(jsonmap.getValue().isInt()){
+                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
+                        } else if(jsonmap.isTextual()){
+                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
+                        }
+                    }
+                }
+                objmapper = new ObjectMapper();
+                actionInputJson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
+                actionObj.setActionJson(actionInputJson);
+            }
         }
-        
-        planJson.findValue("FalseAction");
-        planJson.findValue("TrueNextCondition");
-        planJson.findValue("FalseNextCondition");
+        conditionObj.setAction(actionObj,true);
+        actionjson = planJson.findValue("FalseAction");
+        if(!actionjson.isNull()){
+            for(int count = 0; actionjson.has(count); count++){
+                actionType = actionjson.findValue("ActionType").get(count).asInt();
+                actionObj = actionfact.getAction(actionType);
+                jsonentry = new TreeMap<String,Object>();
+                jsonIte = actionjson.fields();
+                while(jsonIte.hasNext()){
+                    jsonmap = jsonIte.next();
+                    if(!jsonmap.getKey().equals("Operation")){
+                        if(jsonmap.getValue().isInt()){
+                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
+                        } else if(jsonmap.isTextual()){
+                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
+                        }
+                    }
+                }
+                objmapper = new ObjectMapper();
+                actionInputJson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
+                actionObj.setActionJson(actionInputJson);
+            }
+        }
+        conditionObj.setAction(actionObj,false);
+        JsonNode conditionJson = null;
+        ConditionBase nextCondition = null;
+        conditionJson = planJson.findValue("TrueNextCondition");
+        if(!conditionJson.isNull()){
+            nextCondition = createCondition(conditionJson);
+            conditionObj.setNextCondition(nextCondition,true);
+        }
+        conditionJson = planJson.findValue("FalseNextCondition");
+        if(!conditionJson.isNull()){
+            nextCondition = createCondition(conditionJson);
+            conditionObj.setNextCondition(nextCondition,false);
+        }
+        return conditionObj;
     }
 }

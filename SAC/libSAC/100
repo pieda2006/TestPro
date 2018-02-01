@@ -4,7 +4,6 @@
   "TrueAction" : [
     {
       "ActionType" : 1,
-      "ActionID" : 1,
       "ChargingRuleName" : "TestSpeed"
     }
   ],
