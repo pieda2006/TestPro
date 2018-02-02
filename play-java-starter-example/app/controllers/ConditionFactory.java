@@ -8,13 +8,13 @@ import java.util.*;
 public class ConditionFactory {
     private static ConditionFactory myinstance = null;
     private static final String conditionTableName = "CONDITION";
+    private static final String KeyParamName = "CONDITION_ID";
     private static final int CONDITION_ID = 0;
     private static final int CONDITION_JSON = 1;
     HashMap<int,ConditionBase> conditionHash = null;
  
     public ConditionFactory(){
         conditionHash = new HashMap<int,ConditionBase>();
-        createAllCondition();
     }
 
     public static ConditionFactory getInstance(){
@@ -82,11 +82,23 @@ public class ConditionFactory {
         return evaluateObj;
     }
     public ConditionBase getCondition(int conditionType){
+        int conditionID;
         ConditionBase conditionObj = conditionHash.get(conditionType);
         if(conditionObj == null){
-            return null;
+            DataManager datamanage = getInstance();
+            ResultSet result = datamanage.getData(conditionTableName,KeyParamName,conditionType);
+            JsonNode conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
+            ConditionBase condition = new ConditionBase();
+            EvaluateBase evaluateObj = null;
+            evaluateObj = createOperation(conditionJson);
+            condition.setOperation(evaluateObj);
+
+            conditionID = result.getInt(CONDITION_ID)
+            planHash.put(conditionID, condition);
+            conditionObj = condition;
         }
         ConditionBase retCondition = new ConditionBase(conditionObj);
         return retCondition;
     }
+    
 }

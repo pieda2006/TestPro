@@ -9,6 +9,8 @@ class ServicePlanFactory {
 
     private static ServicePlanFactory myinstance = null;
     private static final String servicePlanTableName = "SERVICE_PLAN";
+    private static final String KeyParamName = "URI";
+    private static final int PLAN_JSON = 1;
     HashMap<String,ConditionBase> planHash = null;
 
     private final int PLAN_NAME = 0;
@@ -17,7 +19,6 @@ class ServicePlanFactory {
 
     public ServicePlanFactory(){
         planHash = new HashMap<String,ConditionBase>();
-        createAllServicePlan();
     }
 
     public ServicePlanFactory getInstance(){
@@ -28,7 +29,18 @@ class ServicePlanFactory {
     }
     
     public ConditionBase getCondition(String uri){
-        return planHash.get(uri);
+        int conditionID;
+        ConditionBase conditionObj = planHash.get(uri);
+        if(conditionObj == null){
+            DataManager datamanage = getInstance();
+            ResultSet result = datamanage.getData(conditionTableName,KeyParamName,uri);
+            JsonNode conditionJson = objmapper.readTree(result.getBytes(PLAN_JSON));
+            conditionObj = createCondition(conditionJson);
+            String planName;
+            planName = result.getString(PLAN_NAME);
+            planHash.put(planName, conditionObj);
+        }
+        return conditionObj;
     }
     
     public void createAllServicePlan(){

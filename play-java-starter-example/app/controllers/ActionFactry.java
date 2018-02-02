@@ -8,6 +8,7 @@ import java.util.*;
 class ActionFactory {
     private static ActionFactory myinstance = null;
     private final static String actionTableName = "ACTION";
+    private final static String KeyParamName = "ACTION_ID";
     private final static int ACTION_ID = 0;
     private final static int ACTION_JSON = 1;
     private HashMap<String,ActionBase> actionHash = null;
@@ -27,7 +28,7 @@ class ActionFactory {
         JsonNode actionJson = null;
         ActionBase action = null;
         ExecuteBase executeObj = null;
-        String actionID = null;
+        int actionID;
         while(result.next()){
             actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
             action = new ActionBase();
@@ -87,8 +88,20 @@ class ActionFactory {
 
     public ActionBase getAction(int actionType){
         ActionBase actionObj = actionHash.get(actionType);
+        int actionID;
         if(actionObj == null){
-            return null;
+            DataManager datamanage = getInstance();
+            ResultSet result = datamanage.getData(actionTableName,KeyParamName,actionType);
+            JsonNode actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
+            ActionBase action = new ActionBase();
+            ExecuteBase executeObj = null;
+            for(int count = 0; actionJson.has(count); count++){
+                executeObj = createOperation(actionJson.get(count));
+                action.setOperation(executeObj);
+            }
+            actionID = result.getInt(ACTION_ID)
+            planHash.put(actionID, action);
+            actionObj = action;
         }
         ActionBase retAction = new ActionBase(actionObj);
         return retAction;
