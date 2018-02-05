@@ -2,10 +2,6 @@ package controllers;
 
 class EvaluateBase {
 
-    public static final int BOOL = 0;
-    public static final int STR = 0;
-    public static final int NUM = 0;
-
     private int operationType;
     ArrayList<EvaluateBase> evaluateObj;
 
@@ -18,7 +14,7 @@ class EvaluateBase {
     public ResultInfo evaluateCondition(JsonNode reqJson){
         ResultInfo resultinfo = new ResultInfo();
         resultinfo.setBoolResult(true);
-        setResultType(BOOL);
+        setResultType(ResultInfo.BOOLTYPE);
         return resultinfo;
     }
     void setEvaluateObj(EvaluateBase evaluate){
