@@ -10,9 +10,6 @@ class ServiceControl {
     /*** Constructer ***/
 
     public ServiceControl(){
-        
-
-
     }
 
     public ServiceControl getInstance(){
