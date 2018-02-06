@@ -1,77 +1,70 @@
 package controllers;
 
-class ExecuteOperationDB {
+class ExecuteOperationJson {
 
-    private JsonNode tableName;
-    private JsonNode key;
-    private JsonNode value;
-    private JsonNode dataJson;
-    private int keyType;
-    private int tableKind;
-    private int keyKind;
+    private JsonNode paramName;
+    private JsonNode paramValue;
+    private int nameKind;
     private int valueKind;
-    private int dataKind;
+    private int paramType;
+    
+    private JsonNode paramValueKind;
 
-    public final static int REQUEST = 0;
-    public final static int ACTION = 1;
-    public final static int DISTRIBUTION = 2;
-    public final static int ANSWER = 3;
-    public final static int GET = 0;
-    public final static int INSERT = 1;
-    public final static int UPDATE = 2;
-    public final static int DELETE = 3;
-    public final static int INTKEY = 0;
-    public final static int STRINGKEY = 1;
-
-    public ExecuteOperationDB(){
+    public ExecuteOperationJson(){
     }
 
     void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
-        DataManager datamanage = DataManager.getInstance();
-        JsonNode opeJson;
-        Object opetree;
-        String opetable = null;
-        String opekey = null;
-        String opevalue = null;
-        
-        int opeintkey;
-        ObjectMapper objectmap = new ObjectMapper();
-        JsonNode 
-        
-        opetable = getStringFromJson(tableName, tableKind);
-        opekey = getStringFromJson(key, keyKind);
-        opevalue = getStringFromJson(value, valueKind);
-        opedata = getStringFromJson(value, dataKind);
 
+        JsonNode opeJson = null;
+        JsonNode setJson = null;
+        LinkedHashMap opeTree = null;
+	    LinkedHashMap setTree = null;
+        int opecount = 0;
+        int setcount = 0;
 
-        ResultSet resultSet = null;
-        if(operationType == GET){
-            if(keyType == INTKEY){
-                resultSet = datamanage.getData(opetable, opekey, Integer.parseInt(opevalue));
+        if(nameKind == REQUEST || nameKind == ACTION){
+            if(nameKind == REQUEST){
+                opeJson = reqJson;
             } else {
-           	    resultSet = datamanage.getData(opetable, opekey, opevalue);
+                opeJson = actionJson;
             }
-            LinkedHashMap resultTree = objectmap.readValue(resultSet.getBytes(1), LinkedHashMap.class);
-            setResultJson(resultTree, result);
-        } else if(operationType == INSERT){
-            if(keyType == INTKEY){
-                datamanage.setData(opetable, opekey, Integer.parseInt(opevalue), opedata);
-            } else {
-           	    datamanage.setData(opetable, opekey, opevalue, opedata);
+            for(opecount = 0; paramName.has(opecount); opecount++){
+                opeJson = opeJson.findValue(paramName.get(opecount).asText);
             }
-        } else if(operationType == UPDATE){
-            if(keyType == INTKEY){
-                datamanage.upData(opetable, opekey, Integer.parseInt(opevalue), opedata);
+        } else if(nameKind == DISTRIBUTION || nameKind == ANSWER){
+            if(nameKind == DISTRIBUTION){
+            	opetree = distJson;
             } else {
-           	    datamanage.upData(opetable, opekey, opevalue, opedata);
+                opetree = ansJson;
             }
-        } else if(operationType == DELETE){
-            if(keyType == INTKEY){
-                datamanage.upData(opetable, opekey, Integer.parseInt(opevalue));
-            } else {
-           	    datamanage.upData(opetable, opekey, opevalue);
+            for(int opecount = 0; inputJson.has(opecount); opecount++){
+                opetree = (LinkedHashMap)opetree.get(inputJson.get(opecount).asText);
             }
         }
+        if(valueKind == REQUEST || valueKind == ACTION){
+            if(valueKind == REQUEST){
+                setJson = reqJson;
+            } else {
+                setJson = actionJson;
+            }
+            for(int setcount = 0; paramName.has(setcount); setcount++){
+                setJson = opeJson.findValue(paramName.get(setcount).asText);
+            }
+        } else if(valueKind == DISTRIBUTION || valueKind == ANSWER){
+            if(valueKind == DISTRIBUTION){
+            	setTree = distJson;
+            } else {
+                setTree = ansJson;
+            }
+            for(int setcount = 0; inputJson.has(setcount); setcount++){
+            	if(inputJson.has(setcount + 1)){
+                    setTree = (LinkedHashMap)opetree.get(inputJson.get(setcount).asText);
+                } else {
+                    
+                }
+            }
+        }
+
     }
 
     void setResultJson(LinkedHashMap resultTree, JsonNode inputJson){
@@ -79,7 +72,7 @@ class ExecuteOperationDB {
         JsonNode opeJson;
         Object opetree;
         Object nextopetree;
-        if(dataKind == DISTRIBUTION){
+        if(valueKind == DISTRIBUTION){
             nextopetree = distJson;
         } else {
             nextopetree = ansJson;
@@ -95,7 +88,7 @@ class ExecuteOperationDB {
         	opetree.replace(inputJson.get(count-1).asText, resultTree);
         }
     }
-
+    
     String getStringFromJson(JsonNode inputJson, int kind){
         String retString = null;
         JsonNode opeJson;
