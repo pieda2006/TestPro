@@ -58,6 +58,12 @@ class ActionFactory {
                 executeDBObj.setTableName(actionJson.findValue("TableName"));
                 executeDBObj.setKey(actionJson.findValue("Key"));
                 executeDBObj.setValue(actionJson.findValue("Value"));
+                executeDBObj.setValue(actionJson.findValue("Data"));
+                executeDBObj.setValueKind(actionJson.findValue("TableKind").asInt());
+                executeDBObj.setValueKind(actionJson.findValue("KeyKind").asInt());
+                executeDBObj.setValueKind(actionJson.findValue("ValueKind").asInt());
+                executeDBObj.setValueKind(actionJson.findValue("DataKind").asInt());
+                executeDBObj.setValueKind(actionJson.findValue("KeyType").asInt());
                 executeObj = executeDBObj;
                 break;
             }
@@ -66,7 +72,8 @@ class ActionFactory {
                 ExecuteOperationJson executeJsonObj = new ExecuteOperationJson();
                 executeJsonObj.setPramName(actionJson.findValue("PramName"));
                 executeJsonObj.setPramValue(actionJson.findValue("PramValue"));
-                executeJsonObj.setParamType(actionJson.findValue("ParamType"));
+                executeJsonObj.setParamType(actionJson.findValue("ParamType").asInt());
+                executeJsonObj.setParamType(actionJson.findValue("ValueKind").asInt());
                 executeObj = executeJsonObj;
                 break;
             }
