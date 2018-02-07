@@ -49,7 +49,7 @@ class ExecuteOperationDB {
             if(keyType == INTKEY){
                 resultSet = datamanage.getData(opetable, opekey, Integer.parseInt(opevalue));
             } else {
-           	    resultSet = datamanage.getData(opetable, opekey, opevalue);
+                resultSet = datamanage.getData(opetable, opekey, opevalue);
             }
             LinkedHashMap resultTree = objectmap.readValue(resultSet.getBytes(1), LinkedHashMap.class);
             setResultJson(resultTree, result);
@@ -63,7 +63,7 @@ class ExecuteOperationDB {
             if(keyType == INTKEY){
                 datamanage.upData(opetable, opekey, Integer.parseInt(opevalue), opedata);
             } else {
-           	    datamanage.upData(opetable, opekey, opevalue, opedata);
+                datamanage.upData(opetable, opekey, opevalue, opedata);
             }
         } else if(operationType == DELETE){
             if(keyType == INTKEY){
@@ -86,13 +86,13 @@ class ExecuteOperationDB {
         }
         int count = 0;
         for(count = 0; inputJson.has(count); count++){
-        	opetree = nextopetree;
+            opetree = nextopetree;
             nextopetree = (LinkedHashMap)opetree.get(inputJson.get(count).asText);
         }
         if(nextopetree == null){
-            opetree.put(inputJson.get(count-1).asText, resultTree);
+            (LinkedHashMap)opetree.put(inputJson.get(count-1).asText, resultTree);
         } else {
-        	opetree.replace(inputJson.get(count-1).asText, resultTree);
+            (LinkedHashMap)opetree.replace(inputJson.get(count-1).asText, resultTree);
         }
     }
 
