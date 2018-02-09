@@ -26,21 +26,49 @@ public class DataManager {
         database = new DataBaseAccesser(url, user, pass);
         String sql = "select * from " + table + ";";
         ResultSet result = database.executeQuery(sql);
-        result.next();
-        ObjectMapper objmapper = new ObjectMapper();
-        configValue = objmapper.readTree(result.getBytes(1));
+        try {
+            result.next();
+            ObjectMapper objmapper = new ObjectMapper();
+            configValue = objmapper.readTree(result.getBytes(1));
+        } catch(Exception e) {
+            configValue = null;
+        }
     }
 
-    public getData(String table, String pramName, String keyValue){
+    public ResultSet getData(String table, String pramName, String keyValue){
         String sql = "select * from " + table + " where " + pramName + " = '" + keyValue + "';" ;
         return database.executeQuery(sql);
     }
-    public getData(String table, String pramName, int keyValue){
+    public ResultSet getData(String table, String pramName, int keyValue){
         String sql = "select * from " + table + " where " + pramName + " = " + keyValue + ";" ;
         return database.executeQuery(sql);
     }
-    public getData(String table){
-        String sql = "select * from " + table + " where " + pramName + " = " + keyValue + ";" ;
+    public ResultSet getData(String table){
+        String sql = "select * from " + table + ";" ;
         return database.executeQuery(sql);
+    }
+    public int setData(String table, String keyValue, String setData){
+        String sql = "insert into " + table + " values('" + keyValue + "', '" + setData + "');";
+        return database.executeUpdate(sql);
+    }
+    public int setData(String table, int keyValue, String setData){
+        String sql = "insert into " + table + " values(" + keyValue + ", '" + setData + "');";
+        return database.executeUpdate(sql);
+    }
+    public int upData(String table, String paramName, String keyValue, String setData){
+        String sql = "update " + table + " set VALUE='" + setData + "' where " + paramName + "='" + keyValue + "';";
+        return database.executeUpdate(sql);
+    }
+    public int upData(String table, String paramName, int keyValue, String setData){
+        String sql = "update " + table + " set VALUE='" + setData + "' where " + paramName + "=" + keyValue + ";";
+        return database.executeUpdate(sql);
+    }
+    public int delData(String table, String paramName, String keyValue){
+        String sql = "delete " + table + " where " + paramName + "='" + keyValue + "';";
+        return database.executeUpdate(sql);
+    }
+    public int delData(String table, String paramName, int keyValue){
+        String sql = "delete " + table + " where " + paramName + "=" + keyValue + ";";
+        return database.executeUpdate(sql);
     }
 }

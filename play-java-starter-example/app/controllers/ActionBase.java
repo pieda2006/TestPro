@@ -28,4 +28,9 @@ class ActionBase {
     public void setOperation(ExecuteBase operation){
         executeArray.add(operation);
     }
+    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson){
+        for(int count = 0; count < executeArray.size(); count++){
+            executeArray.get(count).executeAction(reqJson, ansJson, distJson, actionJson);
+        }
+    }
 }

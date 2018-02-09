@@ -1,40 +1,40 @@
 package controllers;
 
 class ResultInfo {
-	
-	private String stringResult;
-	private int intResult;
-	private boolean boolResult;
+
+    private String stringResult;
+    private int intResult;
+    private boolean boolResult;
     private int resultType;
-    
+ 
     public final static int INTTYPE = 0;
     public final static int STRINGTYPE = 1;
     public final static int BOOLTYPE = 2;
 
     public ResultInfo(){
     }
-    void setBoolResult(boolean boolRes){
+    public void setBoolResult(boolean boolRes){
         boolResult = boolRes;
     }
-    void setIntResult(intRes : int){
+    public void setIntResult(int intRes){
         intResult = intRes;
     }
-    void setStringResult(String stringRes){
+    public void setStringResult(String stringRes){
         stringResult = stringRes;
     }
-    boolean getBoolResult(){
+    public boolean getBoolResult(){
         return boolResult;
     }
-    int getIntResult(){
+    public int getIntResult(){
         return intResult;
     }
-    String getStringResult(){
+    public String getStringResult(){
         return stringResult;
     }
-    void setResultType(type : int){
+    public void setResultType(int type){
         resultType = type;
     }
-    int getResultType(){
+    public int getResultType(){
         return resultType;
     }
 }

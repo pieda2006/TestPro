@@ -1,12 +1,15 @@
 package controllers;
 
+import java.util.*;
+import com.fasterxml.jackson.databind.JsonNode;
+
 class ExecuteBase {
 
-    private int operationType;
-    private ArrayList<ExecuteBase> executeArray = null;
+    protected int operationType;
+    protected ArrayList<ExecuteBase> executeArray = null;
 
     public ExecuteBase(){
-        executeArray = new ArrayList<ExecuteBase>;
+        executeArray = new ArrayList<ExecuteBase>();
     }
     public void setOperationType(int opeType){
         operationType =opeType;

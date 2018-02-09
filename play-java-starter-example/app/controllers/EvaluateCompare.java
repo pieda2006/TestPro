@@ -1,6 +1,8 @@
 package controllers;
 
-class EvaluateCompare {
+import com.fasterxml.jackson.databind.JsonNode;
+
+class EvaluateCompare extends EvaluateBase {
 
     public final static int EQUALS = 0;
     public final static int COMPARE = 1;
@@ -8,8 +10,8 @@ class EvaluateCompare {
     public EvaluateCompare(){
     }
     public ResultInfo evaluateCondition(JsonNode reqJson, JsonNode conditionJson){
-    	ResultInfo result = new ResultInfo(ResultInfo.BOOLTYPE);
-    	result.setResultType(ResultInfo.BOOLTYPE)
+        ResultInfo result = new ResultInfo();
+        result.setResultType(ResultInfo.BOOLTYPE);
         ResultInfo resultLeft = null;
         ResultInfo resultRight = null;
         resultLeft = evaluateObj.get(0).evaluateCondition(reqJson, conditionJson);

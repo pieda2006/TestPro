@@ -1,6 +1,8 @@
 package controllers;
 
-class EvaluateLogical {
+import com.fasterxml.jackson.databind.JsonNode;
+
+class EvaluateLogical extends EvaluateBase {
 
     public final static int OR = 2;
     public final static int AND = 3;
@@ -8,8 +10,8 @@ class EvaluateLogical {
     public EvaluateLogical(){
     }
     public ResultInfo evaluateCondition(JsonNode reqJson, JsonNode conditionJson){
-    	ResultInfo result = new ResultInfo(ResultInfo.BOOLTYPE);
-    	result.setResultType(ResultInfo.BOOLTYPE)
+        ResultInfo result = new ResultInfo();
+        result.setResultType(ResultInfo.BOOLTYPE);
         ResultInfo resultLeft = null;
         ResultInfo resultRight = null;
         resultLeft = evaluateObj.get(0).evaluateCondition(reqJson, conditionJson);

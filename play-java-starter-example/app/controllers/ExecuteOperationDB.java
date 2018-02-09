@@ -1,6 +1,11 @@
 package controllers;
 
-class ExecuteOperationDB {
+import java.util.*;
+import java.sql.ResultSet;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+class ExecuteOperationDB extends ExecuteBase {
 
     private JsonNode tableName;
     private JsonNode key;
@@ -33,15 +38,15 @@ class ExecuteOperationDB {
         String opetable = null;
         String opekey = null;
         String opevalue = null;
-        
+        String opedata = null;
+ 
         int opeintkey;
         ObjectMapper objectmap = new ObjectMapper();
-        JsonNode 
         
-        opetable = getStringFromJson(tableName, tableKind);
-        opekey = getStringFromJson(key, keyKind);
-        opevalue = getStringFromJson(value, valueKind);
-        opedata = getStringFromJson(value, dataKind);
+        opetable = getStringFromJson(tableName, tableKind, reqJson, actionJson, distJson, ansJson);
+        opekey = getStringFromJson(key, keyKind, reqJson, actionJson, distJson, ansJson);
+        opevalue = getStringFromJson(value, valueKind, reqJson, actionJson, distJson, ansJson);
+        opedata = getStringFromJson(value, dataKind, reqJson, actionJson, distJson, ansJson);
 
 
         ResultSet resultSet = null;
@@ -52,12 +57,12 @@ class ExecuteOperationDB {
                 resultSet = datamanage.getData(opetable, opekey, opevalue);
             }
             LinkedHashMap resultTree = objectmap.readValue(resultSet.getBytes(1), LinkedHashMap.class);
-            setResultJson(resultTree, result);
+            setResultJson(resultTree, dataJson, distJson, ansJson);
         } else if(operationType == INSERT){
             if(keyType == INTKEY){
-                datamanage.setData(opetable, opekey, Integer.parseInt(opevalue), opedata);
+                datamanage.setData(opetable, Integer.parseInt(opevalue), opedata);
             } else {
-           	    datamanage.setData(opetable, opekey, opevalue, opedata);
+                datamanage.setData(opetable, opevalue, opedata);
             }
         } else if(operationType == UPDATE){
             if(keyType == INTKEY){
@@ -67,18 +72,18 @@ class ExecuteOperationDB {
             }
         } else if(operationType == DELETE){
             if(keyType == INTKEY){
-                datamanage.upData(opetable, opekey, Integer.parseInt(opevalue));
+                datamanage.delData(opetable, opekey, Integer.parseInt(opevalue));
             } else {
-           	    datamanage.upData(opetable, opekey, opevalue);
+           	    datamanage.delData(opetable, opekey, opevalue);
             }
         }
     }
 
-    void setResultJson(LinkedHashMap resultTree, JsonNode inputJson){
-        String retString;
-        JsonNode opeJson;
-        Object opetree;
-        Object nextopetree;
+    void setResultJson(LinkedHashMap resultTree, JsonNode inputJson, LinkedHashMap distJson, LinkedHashMap ansJson){
+        String retString = null;
+        JsonNode opeJson = null;
+        Object opetree = null;
+        Object nextopetree = null;
         if(dataKind == DISTRIBUTION){
             nextopetree = distJson;
         } else {
@@ -87,16 +92,16 @@ class ExecuteOperationDB {
         int count = 0;
         for(count = 0; inputJson.has(count); count++){
             opetree = nextopetree;
-            nextopetree = (LinkedHashMap)opetree.get(inputJson.get(count).asText);
+            nextopetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText());
         }
         if(nextopetree == null){
-            (LinkedHashMap)opetree.put(inputJson.get(count-1).asText, resultTree);
+            nextopetree = ((LinkedHashMap)opetree).put(inputJson.get(count-1).asText(), resultTree);
         } else {
-            (LinkedHashMap)opetree.replace(inputJson.get(count-1).asText, resultTree);
+            nextopetree = ((LinkedHashMap)opetree).replace(inputJson.get(count-1).asText(), resultTree);
         }
     }
 
-    String getStringFromJson(JsonNode inputJson, int kind){
+    String getStringFromJson(JsonNode inputJson, int kind, JsonNode reqJson, JsonNode actionJson, LinkedHashMap distJson, LinkedHashMap ansJson){
         String retString = null;
         JsonNode opeJson;
         ObjectMapper objectmapper = new ObjectMapper();
@@ -110,7 +115,7 @@ class ExecuteOperationDB {
                 opeJson = actionJson;
             }
             for(int count = 0; inputJson.has(count); count++){
-                opeJson = opeJson.findValue(inputJson.get(count).asText);
+                opeJson = opeJson.findValue(inputJson.get(count).asText());
             }
             if(opeJson.isInt()){
                 retString = Integer.toString(opeJson.asInt());
@@ -126,12 +131,12 @@ class ExecuteOperationDB {
                 opetree = ansJson;
             }
             for(int count = 0; inputJson.has(count); count++){
-                opetree = (LinkedHashMap)opetree.get(inputJson.get(count).asText);
+                opetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText());
             }
             if(opetree.getClass().getSimpleName().equals("String")){
                 retString = (String)opetree;
             } else if(opetree.getClass().getSimpleName().equals("Integer")){
-                retString = Integer.toString(opetree);
+                retString = Integer.toString((int)opetree);
             } else if(opetree.getClass().getSimpleName().equals("LinkedHashMap")){
                 retString = objectmapper.writeValueAsString(opetree);
             }
@@ -152,7 +157,7 @@ class ExecuteOperationDB {
     void setValue(JsonNode jsonValue){
         value = jsonValue;
     }
-    void setResult(JsonNode jsonResult){
+    void setResult(JsonNode jsonData){
         dataJson = jsonData;
     }
     void setTableKind(int kind){

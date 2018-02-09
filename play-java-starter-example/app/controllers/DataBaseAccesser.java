@@ -15,12 +15,29 @@ public class DataBaseAccesser {
 
     /*** DataBase Connect ***/
     public DataBaseAccesser(String url, String user, String password){
-        conection = DriverManager.getConnection(url,user,password);
-        statement = conection.createStatement();
+        try {
+            conection = DriverManager.getConnection(url,user,password);
+            statement = conection.createStatement();
+        } catch (Exception e){
+            conection = null;
+            statement = null;
+        }
     }
 
     /*** Get DataBase Data ***/
     public ResultSet executeQuery(String sql){
-       return statement.executeQuery(sql);
+       try {
+           return statement.executeQuery(sql);
+       } catch (Exception e) {
+           return null;
+       }
+    }
+    /*** Set DataBase Data ***/
+    public int executeUpdate(String sql){
+        try {
+            return statement.executeUpdate(sql);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

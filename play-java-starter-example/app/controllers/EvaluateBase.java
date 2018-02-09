@@ -1,23 +1,26 @@
 package controllers;
 
+import java.util.*;
+import com.fasterxml.jackson.databind.JsonNode;
+
 class EvaluateBase {
 
-    private int operationType;
-    ArrayList<EvaluateBase> evaluateObj;
+    protected int operationType;
+    protected ArrayList<EvaluateBase> evaluateObj = null;
 
     public EvaluateBase(){
-        evaluateObj = new ArrayList<EvaluateBase>;
+        evaluateObj = new ArrayList<EvaluateBase>();
     }
     public void setOperationType(int opeType){
         operationType =opeType;
     }
-    public ResultInfo evaluateCondition(JsonNode reqJson){
+    public ResultInfo evaluateCondition(JsonNode reqJson, JsonNode inputJson){
         ResultInfo resultinfo = new ResultInfo();
         resultinfo.setBoolResult(true);
-        setResultType(ResultInfo.BOOLTYPE);
+        resultinfo.setResultType(ResultInfo.BOOLTYPE);
         return resultinfo;
     }
-    void setEvaluateObj(EvaluateBase evaluate){
+    public void setEvaluateObj(EvaluateBase evaluate){
         evaluateObj.add(evaluate);
     }
 }
