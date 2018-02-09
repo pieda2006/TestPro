@@ -81,9 +81,10 @@ class ActionFactory {
             {
                 ExecuteSendMessage executeMessageObj = new ExecuteSendMessage();
                 executeMessageObj.setSendTo(actionJson.findValue("SendTo"));
-                executeMessageObj.setMethod(actionJson.findValue("Method"));
+                executeMessageObj.setMethod(actionJson.findValue("Method").asInt());
                 executeMessageObj.setValue(actionJson.findValue("Value"));
                 executeMessageObj.setResult(actionJson.findValue("Result"));
+                executeMessageObj.setValueKind(actionJson.findValue("ValueKind").asInt());
                 executeObj = executeMessageObj;
                 break;
             }

@@ -12,7 +12,7 @@ class ExecuteBase {
         operationType =opeType;
     }
 
-    void executeAction(JsonNode reqJson, TreeMap ansJson, TreeMap distJson, JsonNode actionJson) {
+    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
     }
 
     void setExecuteObj(ExecuteBase execute){

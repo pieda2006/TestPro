@@ -11,6 +11,10 @@ class ExecuteOperationJson {
     public final static int TYPESTRING = 1;
     public final static int TYPENULL = 2;
     public final static int TYPEOBJECT = 3;
+    public final static int REQUEST = 0;
+    public final static int ACTION = 1;
+    public final static int DISTRIBUTION = 2;
+    public final static int ANSWER = 3;
     
     public ExecuteOperationJson(){
     }
@@ -38,7 +42,7 @@ class ExecuteOperationJson {
             if(opeJson.isInt()){
                 registObj = opeJson.asInt();
             } else if(opeJson.isTextual()){
-                registObj = opeJson.asInt();
+                registObj = opeJson.asText();
             } else if(opeJson.isObject()){
                 registObj = objectmap.readValue(opeJson.toString(), LinkedHashMap.class);
             }

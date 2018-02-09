@@ -26,8 +26,8 @@ class ServiceControl {
         while(conditionObj != null) {
             conditionObj = conditionObj.evaluateCondition(reqJson, actionList);
         }
-        TreeMap<String,Object> ansJson = new TreeMap<String,Object>();
-        TreeMap<String,Object> actionJson = new TreeMap<String,Object>();
+        LinkedHashMap<String,Object> ansJson = new LinkedHashMap<String,Object>();
+        LinkedHashMap<String,Object> actionJson = new LinkedHashMap<String,Object>();
         for(int count = 0; count < actionList.size(); count++){
             actionList.get(count).executeAction(reqJson, ansJson, actionJson);
         }

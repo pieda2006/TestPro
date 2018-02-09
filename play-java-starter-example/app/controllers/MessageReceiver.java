@@ -25,9 +25,10 @@ public class MessageReceiver extends Controller {
 
         String uri = request().uri();
 
+        ServiceControl svcObj = ServiceControl.getInstance();
+        JsonNode outputJsonNode = svcObj.decideAction(uri, inputJsonNode);
 
-
-        return ok("");
+        return ok(outputJsonNode.toString());
 
     }
 
