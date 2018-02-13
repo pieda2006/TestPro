@@ -1,10 +1,16 @@
 package controllers;
-import play.api.Play.current
-import play.api.libs.ws._
-import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder
-import scala.concurrent.Future
 
-class ExecuteSendMessage {
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.inject.Inject;
+
+import play.mvc.*;
+import play.libs.ws.*;
+import java.util.concurrent.CompletionStage;
+
+class ExecuteSendMessage extends ExecuteBase  implements WSBodyReadables, WSBodyWritables {
     private JsonNode sendUri;
     private int method;
     private JsonNode value;
@@ -31,24 +37,28 @@ class ExecuteSendMessage {
     public final static int PATCH = 8;
     public final static int OWN = 9;
 
-    public ExecuteSendMessage(){
+    @Inject WSClient ws;
+
+    public ExecuteSendMessage() {
     }
 
     void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
 
         String uri = null;
         String sendValue = null;
-        
+
         /*** Get Json Data ***/
         uri = getStringData(sendUri);
         sendValue = getStringData(value);
-        /*** Send Data ***/
-        WSRequestHolder wsreq = WS.url(uri);
-        WSResponse wsres = null;
-        JsonNode jsonRes = null;
+
+        CompletionStage<JsonNode> jsonPromise = null;
+        // implements WSBodyReadables or use WSBodyReadables.instance.json()
+        jsonPromise = ws.url(uri).get().thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
         if(method == POST){
-            wsres = wsreq.setContentType("application/json").setRequestTimeout(1000).post(jsonString);
-            jsonRes = wsres.asJson();
+        	jsonPromise = ws.url(uri).addHeader("Content-Type", "application/json")
+        	.setRequestTimeout(1000).post(sendValue)
+        	.thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
+
         } else if(method == GET){
             wsres = wsreq.setContentType("application/json").setRequestTimeout(1000).get();
             jsonRes = wsres.asJson();
@@ -80,12 +90,12 @@ class ExecuteSendMessage {
         int count = 0;
         for(count = 0; inputJson.has(count); count++){
             opetree = nextopetree;
-            nextopetree = (LinkedHashMap)opetree.get(inputJson.get(count).asText);
+            nextopetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText);
         }
         if(nextopetree == null){
-            (LinkedHashMap)opetree.put(inputJson.get(count-1).asText, resultTree);
+            ((LinkedHashMap)opetree).put(inputJson.get(count-1).asText, resultTree);
         } else {
-            (LinkedHashMap)opetree.replace(inputJson.get(count-1).asText, resultTree);
+            ((LinkedHashMap)opetree).replace(inputJson.get(count-1).asText, resultTree);
         }
     }
     public String getStringData(JsonNode jsondata){
@@ -117,8 +127,7 @@ class ExecuteSendMessage {
                 opetree = ansJson;
             }
             for(opecount = 0; jsondata.has(opecount); opecount++){
-                    opetree = (LinkedHashMap)opetree.get(jsondata.get(opecount).asText);
-                }
+               opetree = ((LinkedHashMap)opetree).get(jsondata.get(opecount).asText);
             }
             registObj = opetree;
             if(opetree.getClass().getSimpleName().equals("String")){

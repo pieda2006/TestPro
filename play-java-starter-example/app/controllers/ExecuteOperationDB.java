@@ -56,8 +56,12 @@ class ExecuteOperationDB extends ExecuteBase {
             } else {
                 resultSet = datamanage.getData(opetable, opekey, opevalue);
             }
-            LinkedHashMap resultTree = objectmap.readValue(resultSet.getBytes(1), LinkedHashMap.class);
-            setResultJson(resultTree, dataJson, distJson, ansJson);
+            try {
+                LinkedHashMap resultTree = objectmap.readValue(resultSet.getBytes(1), LinkedHashMap.class);
+                setResultJson(resultTree, dataJson, distJson, ansJson);
+            } catch (Exception e){
+                //Error Action
+            }
         } else if(operationType == INSERT){
             if(keyType == INTKEY){
                 datamanage.setData(opetable, Integer.parseInt(opevalue), opedata);
@@ -138,7 +142,11 @@ class ExecuteOperationDB extends ExecuteBase {
             } else if(opetree.getClass().getSimpleName().equals("Integer")){
                 retString = Integer.toString((int)opetree);
             } else if(opetree.getClass().getSimpleName().equals("LinkedHashMap")){
-                retString = objectmapper.writeValueAsString(opetree);
+            	try {
+                    retString = objectmapper.writeValueAsString(opetree);
+                } catch (Exception e) {
+                    //Error Action
+                }
             }
         }
         return retString;

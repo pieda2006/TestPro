@@ -1,6 +1,9 @@
 package controllers;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-class ExecuteOperationJson {
+class ExecuteOperationJson extends ExecuteBase {
 
     private JsonNode paramName;
     private JsonNode paramValue;
@@ -25,9 +28,11 @@ class ExecuteOperationJson {
         JsonNode setJson = null;
         Object opeTree = null;
 	    Object setTree = null;
+	    Object setnextTree = null;
 	    Object registObj = null;
         int opecount = 0;
         int setcount = 0;
+        ObjectMapper objectmap = new ObjectMapper();
 
         /*** Get Json Data ***/
         if(nameKind == REQUEST || nameKind == ACTION){
@@ -37,28 +42,29 @@ class ExecuteOperationJson {
                 opeJson = actionJson;
             }
             for(opecount = 0; paramName.has(opecount); opecount++){
-                opeJson = opeJson.findValue(paramName.get(opecount).asText);
+                opeJson = opeJson.findValue(paramName.get(opecount).asText());
             }
             if(opeJson.isInt()){
                 registObj = opeJson.asInt();
             } else if(opeJson.isTextual()){
                 registObj = opeJson.asText();
             } else if(opeJson.isObject()){
-                registObj = objectmap.readValue(opeJson.toString(), LinkedHashMap.class);
-            }
-        } 
-        /*** Get Tree Data ***/
-        else if(nameKind == DISTRIBUTION || nameKind == ANSWER){
-            if(nameKind == DISTRIBUTION){
-            	opetree = distJson;
-            } else {
-                opetree = ansJson;
-            }
-            for(opecount = 0; inputJson.has(opecount); opecount++){
-                    opetree = (LinkedHashMap)opetree.get(inputJson.get(opecount).asText);
+            	try {
+                    registObj = objectmap.readValue(opeJson.toString(), LinkedHashMap.class);
+                } catch (Exception e) {
+                    //Error Action
                 }
             }
-            registObj = opetree;
+        } else if(nameKind == DISTRIBUTION || nameKind == ANSWER){ /*** Get Tree Data ***/
+            if(nameKind == DISTRIBUTION){
+            	opeTree = distJson;
+            } else {
+                opeTree = ansJson;
+            }
+            for(opecount = 0; paramName.has(opecount); opecount++){
+                opeTree = ((LinkedHashMap)opeTree).get(paramName.get(opecount).asText());
+            }
+            registObj = opeTree;
         }
         /*** Set Data ***/
         if(valueKind == DISTRIBUTION){
@@ -67,14 +73,14 @@ class ExecuteOperationJson {
             setTree = ansJson;
         }
             
-        for(setcount = 0; inputJson.has(setcount); setcount++){
+        for(setcount = 0; paramValue.has(setcount); setcount++){
             setTree = setnextTree;
-            setnextTree = (LinkedHashMap)opetree.get(inputJson.get(setcount).asText);
+            setnextTree = ((LinkedHashMap)opeTree).get(paramValue.get(setcount).asText());
         }
         if(setnextTree == null){
-            (LinkedHashMap)setTree.put(inputJson.get(count-1).asText, registObj);
+            ((LinkedHashMap)setTree).put(paramValue.get(setcount-1).asText(), registObj);
         } else {
-            (LinkedHashMap)setTree.replace(inputJson.get(count-1).asText, registObj);
+            ((LinkedHashMap)setTree).replace(paramValue.get(setcount-1).asText(), registObj);
         }
     }
 
