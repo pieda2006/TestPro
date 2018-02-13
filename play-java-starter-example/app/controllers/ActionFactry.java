@@ -11,15 +11,16 @@ class ActionFactory {
     private final static String KeyParamName = "ACTION_ID";
     private final static int ACTION_ID = 0;
     private final static int ACTION_JSON = 1;
-    private HashMap<String,ActionBase> actionHash = null;
+    private HashMap<Integer,ActionBase> actionHash = null;
     
     public ActionFactory(){
-        actionHash = new HashMap<String,ActionBase>();
+        actionHash = new HashMap<Integer,ActionBase>();
     }
     public static ActionFactory getInstance(){
         if(myinstance == null){
             myinstance = new ActionFactory();
         }
+        return myinstance;
     }
     public void createAllAction(){
         DataManager datamanage = DataManager.getInstance();
@@ -29,17 +30,20 @@ class ActionFactory {
         ActionBase action = null;
         ExecuteBase executeObj = null;
         int actionID;
-        while(result.next()){
-            actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
-            action = new ActionBase();
-            for(int count = 0; actionJson.has(count); count++){
-                executeObj = createOperation(actionJson.get(count));
-                action.setOperation(executeObj);
+        try {
+            while(result.next()){
+                actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
+                action = new ActionBase();
+                for(int count = 0; actionJson.has(count); count++){
+                    executeObj = createOperation(actionJson.get(count));
+                    action.setOperation(executeObj);
+                }
+                actionID = result.getInt(ACTION_ID);
+                actionHash.put(actionID, action);
             }
-            actionID = result.getInt(ACTION_ID)
-            planHash.put(actionID, action);
+        } catch (Exception e) {
+            //Error Action
         }
-        retrun ServicePlanFactory_OK;
     }
     
     public ExecuteBase createOperation(JsonNode actionJson){
@@ -67,11 +71,11 @@ class ActionFactory {
                 executeObj = executeDBObj;
                 break;
             }
-            case 4 //Json operation
+            case 4: //Json operation
             {
                 ExecuteOperationJson executeJsonObj = new ExecuteOperationJson();
-                executeJsonObj.setPramName(actionJson.findValue("PramName"));
-                executeJsonObj.setPramValue(actionJson.findValue("PramValue"));
+                executeJsonObj.setParamName(actionJson.findValue("PramName"));
+                executeJsonObj.setParamValue(actionJson.findValue("PramValue"));
                 executeJsonObj.setParamType(actionJson.findValue("ParamType").asInt());
                 executeJsonObj.setParamType(actionJson.findValue("ValueKind").asInt());
                 executeObj = executeJsonObj;
@@ -80,36 +84,42 @@ class ActionFactory {
             case 5: //setdMessage
             {
                 ExecuteSendMessage executeMessageObj = new ExecuteSendMessage();
-                executeMessageObj.setSendTo(actionJson.findValue("SendTo"));
+                executeMessageObj.setSendUri(actionJson.findValue("SendTo"));
                 executeMessageObj.setMethod(actionJson.findValue("Method").asInt());
-                executeMessageObj.setValue(actionJson.findValue("Value"));
+                executeMessageObj.setSendValue(actionJson.findValue("SendValue"));
                 executeMessageObj.setResult(actionJson.findValue("Result"));
                 executeMessageObj.setValueKind(actionJson.findValue("ValueKind").asInt());
+                executeMessageObj.setDataKind(actionJson.findValue("DataKind").asInt());
                 executeObj = executeMessageObj;
                 break;
             }
         }
         
-        executeObj.setoperationType(operationType);
-        return evaluateObj;
+        executeObj.setOperationType(operationType);
+        return executeObj;
     }
 
     public ActionBase getAction(int actionType){
         ActionBase actionObj = actionHash.get(actionType);
         int actionID;
         if(actionObj == null){
-            DataManager datamanage = getInstance();
+            DataManager datamanage = DataManager.getInstance();
             ResultSet result = datamanage.getData(actionTableName,KeyParamName,actionType);
-            JsonNode actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
-            ActionBase action = new ActionBase();
-            ExecuteBase executeObj = null;
-            for(int count = 0; actionJson.has(count); count++){
-                executeObj = createOperation(actionJson.get(count));
-                action.setOperation(executeObj);
+            try {
+                ObjectMapper objmapper = new ObjectMapper();
+                JsonNode actionJson = objmapper.readTree(result.getBytes(ACTION_JSON));
+                ActionBase action = new ActionBase();
+                ExecuteBase executeObj = null;
+                for(int count = 0; actionJson.has(count); count++){
+                    executeObj = createOperation(actionJson.get(count));
+                    action.setOperation(executeObj);
+                }
+                actionID = result.getInt(ACTION_ID);
+                actionHash.put(actionID, action);
+                actionObj = action;
+            } catch (Exception e) {
+                //Error Action
             }
-            actionID = result.getInt(ACTION_ID)
-            planHash.put(actionID, action);
-            actionObj = action;
         }
         ActionBase retAction = new ActionBase(actionObj);
         return retAction;

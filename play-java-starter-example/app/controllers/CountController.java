@@ -3,9 +3,14 @@ package controllers;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.Counter;
-
+import play.mvc.Http.RequestBody;
+import play.libs.Json;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This controller demonstrates how to use dependency injection to
@@ -30,7 +35,70 @@ public class CountController extends Controller {
      * requests by an entry in the <code>routes</code> config file.
      */
     public Result count() {
-        return ok(Integer.toString(counter.nextCount()));
+        RequestBody body = request().body();
+        JsonNode jsonNode = body.asJson();
+        JsonNode jsonData = jsonNode.findValue("ConditionType");
+        int ConditionType1 = jsonData.asInt();
+        jsonData = jsonNode.findValue("TrueNextCondition");
+        jsonData = jsonData.findValue("ConditionType");
+        int ConditionType2 = jsonData.asInt();
+        Iterator<Map.Entry<String,JsonNode>> jsonIte = jsonNode.fields();
+        Map.Entry<String,JsonNode> jsonmap = null;
+        String resultmessge = "";
+        ObjectMapper objectmapper = new ObjectMapper();
+        boolean bool = false;
+        LinkedHashMap<String, Object> linkhash = new LinkedHashMap<String, Object>();
+
+        /*** Json Element Read
+        while(jsonIte.hasNext()){
+            jsonmap = jsonIte.next();
+            resultmessge = resultmessge + jsonmap.getKey() + " : " + jsonmap.getValue().asText() + " : " + jsonmap.getValue().isInt() + "\n";
+        } ***/
+        /*** Array 
+        jsonData = jsonNode.findValue("ConditionType");
+        resultmessge = jsonData.get(1).findValue("test2").asText();
+        resultmessge = "" + jsonData.has(2);
+        ***/
+        /*** Create JsonData ***/
+        TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
+        jsonentry.put("test","test");
+        jsonentry.put("tkc","tkc");
+        linkhash.put("test","test");
+        linkhash.put("tkc","tkc");
+        TreeMap<String,Object> jsonentry_child = new TreeMap<String,Object>();
+        jsonentry_child.put("child","child");
+        jsonentry.put("child",jsonentry_child);
+        try {
+            //resultmessge = objectmapper.writeValueAsString(jsonentry);
+        } catch (Exception e) {
+        }  
+
+        /*** Json Create from String ***/
+        try {
+            jsonNode = objectmapper.readTree(/*objectmapper.writeValueAsString(jsonentry)*/"1");
+        } catch (Exception e) {
+            resultmessge = e.getClass().getSimpleName();
+        }
+
+        //resultmessge = jsonNode.findValue("test").asText();
+
+
+        /*** JsonNode to String ***/
+        resultmessge = jsonNode.toString();
+
+        try {
+        //    LinkedHashMap tree = objectmapper.readValue(/*resultmessge*/"1", LinkedHashMap.class);
+        //    resultmessge = objectmapper.writeValueAsString(tree);
+        //    resultmessge = Integer.toString((int)tree.get("PCS"));
+        //    resultmessge = tree.get("TrueNextCondition").getClass().getSimpleName();
+        //    tree = (LinkedHashMap)tree.get("TrueNextCondition");
+        //    resultmessge = Integer.toString((int)tree.get("ConditionType"));
+        //    bool = tree.getClass().isInstance(testTree);
+        } catch (Exception e) {
+            resultmessge = e.getClass().getSimpleName();
+        }
+        return ok("\n--------------------\n" + resultmessge + "\n--------------------\n");
+        //return ok("test ok");
     }
 
 }

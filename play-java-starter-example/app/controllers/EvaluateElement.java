@@ -37,4 +37,11 @@ class EvaluateElement extends EvaluateBase {
         }
         return resultinfo;
     }
+
+    public void setParamName(JsonNode input){
+        paramName = input;
+    }
+    public void setParamType(int type){
+        paramType = type;
+    }
 }

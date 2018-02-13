@@ -11,33 +11,37 @@ public class ConditionFactory {
     private static final String KeyParamName = "CONDITION_ID";
     private static final int CONDITION_ID = 0;
     private static final int CONDITION_JSON = 1;
-    HashMap<int,ConditionBase> conditionHash = null;
+    HashMap<Integer,ConditionBase> conditionHash = null;
  
     public ConditionFactory(){
-        conditionHash = new HashMap<int,ConditionBase>();
+        conditionHash = new HashMap<Integer,ConditionBase>();
     }
 
     public static ConditionFactory getInstance(){
         if(myinstance == null){
-            myinstance = new ConditionFactory
+            myinstance = new ConditionFactory();
         }
         return myinstance;
     }
     
-    public int createAllCondition(){
+    public void createAllCondition(){
         DataManager datamanage = DataManager.getInstance();
         ResultSet result = datamanage.getData(conditionTableName);
         JsonNode conditionJson = null;
         ConditionBase condition = null;
         ObjectMapper objmapper = new ObjectMapper();
         EvaluateBase evaluateObj = null;
-        while(result.next()){
-            conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
-            condition = new ConditionBase();
-            evaluateObj = createOperation(conditionJson);
-            condition.setEvaluateObj(evaluateObj);
-            int conditionID = result.getString(CONDITION_ID)
-            conditionHash.put(conditionID, condition);
+        try {
+            while(result.next()){
+                conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
+                condition = new ConditionBase();
+                evaluateObj = createOperation(conditionJson);
+                condition.setEvaluateObj(evaluateObj);
+                int conditionID = result.getInt(CONDITION_ID);
+                conditionHash.put(conditionID, condition);
+            }
+        } catch (Exception e) {
+            //Error Action
         }
     }
     public EvaluateBase createOperation(JsonNode conditionJson){
@@ -57,7 +61,7 @@ public class ConditionFactory {
                 evaluateObj = evaluateCompareObj;
                 break;
             }
-            case 2
+            case 2:
             case 3:
             { /*** Or / And ***/
                 EvaluateLogical evaluateLogicalObj = new EvaluateLogical();
@@ -71,31 +75,37 @@ public class ConditionFactory {
             case 5:
             { /*** Get Element/ Input ***/
                 EvaluateElement evaluateElementObj = new EvaluateElement();
-                evaluateElementObj.setParamName(conditionJson.findValue("PramName").asText);
-                evaluateElementObj.setParamType(conditionJson.findValue("PramType").asInt);
+                evaluateElementObj.setParamName(conditionJson.findValue("ParamName"));
+                evaluateElementObj.setParamType(conditionJson.findValue("ParamType").asInt());
                 evaluateObj = evaluateElementObj;
                 break;
             }
         }
         
-        evaluateObj.setoperationType(operationType);
+        evaluateObj.setOperationType(operationType);
         return evaluateObj;
     }
     public ConditionBase getCondition(int conditionType){
         int conditionID;
         ConditionBase conditionObj = conditionHash.get(conditionType);
         if(conditionObj == null){
-            DataManager datamanage = getInstance();
+            ObjectMapper objmapper = new ObjectMapper();
+            DataManager datamanage = DataManager.getInstance();
+            JsonNode conditionJson = null;
             ResultSet result = datamanage.getData(conditionTableName,KeyParamName,conditionType);
-            JsonNode conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
-            ConditionBase condition = new ConditionBase();
-            EvaluateBase evaluateObj = null;
-            evaluateObj = createOperation(conditionJson);
-            condition.setOperation(evaluateObj);
-
-            conditionID = result.getInt(CONDITION_ID)
-            planHash.put(conditionID, condition);
-            conditionObj = condition;
+            try {
+                result.next();
+                conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
+                ConditionBase condition = new ConditionBase();
+                EvaluateBase evaluateObj = null;
+                evaluateObj = createOperation(conditionJson);
+                condition.setEvaluateObj(evaluateObj);
+                conditionID = result.getInt(CONDITION_ID);
+                conditionHash.put(conditionID, condition);
+                conditionObj = condition;
+            } catch (Exception e) {
+                //Error Action
+            }
         }
         ConditionBase retCondition = new ConditionBase(conditionObj);
         return retCondition;

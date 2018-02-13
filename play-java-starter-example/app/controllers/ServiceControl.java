@@ -1,18 +1,19 @@
 package controllers;
 
+import java.util.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ServiceControl {
 
-    private ServiceControl myinstance = null;
+    private static ServiceControl myinstance = null;
 
     /*** Constructer ***/
 
     public ServiceControl(){
     }
 
-    public ServiceControl getInstance(){
+    public static ServiceControl getInstance(){
         if(myinstance == null){
             myinstance = new ServiceControl();
         }
@@ -32,7 +33,12 @@ class ServiceControl {
             actionList.get(count).executeAction(reqJson, ansJson, actionJson);
         }
         ObjectMapper objectmap = new ObjectMapper();
-        JsonNode answer = objectmap.readTree(objectmap.writeValueAsString(ansJson));
+        JsonNode answer = null;
+        try {
+            answer = objectmap.readTree(objectmap.writeValueAsString(ansJson));
+        } catch (Exception e) {
+            //Error Action
+        }
         return answer;
     }
 }
