@@ -16,6 +16,7 @@ class ActionBase {
     }
     public ActionBase(ActionBase copyObj){
         ArrayList<ExecuteBase> executeObj = copyObj.getExecuteObj();
+        setActionType(copyObj.getActionType());
         setExecuteObj(executeObj);
     }
     public ArrayList<ExecuteBase> getExecuteObj(){

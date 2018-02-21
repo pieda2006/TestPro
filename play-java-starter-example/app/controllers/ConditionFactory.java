@@ -7,10 +7,10 @@ import java.util.*;
 
 public class ConditionFactory {
     private static ConditionFactory myinstance = null;
-    private static final String conditionTableName = "CONDITION";
-    private static final String KeyParamName = "CONDITION_ID";
-    private static final int CONDITION_ID = 0;
-    private static final int CONDITION_JSON = 1;
+    private static final String conditionTableName = "CONDITION_TABLE";
+    private static final String KeyParamName = "CONDITIONID";
+    private static final int CONDITION_ID = 1;
+    private static final int CONDITION_JSON = 2;
     HashMap<Integer,ConditionBase> conditionHash = null;
  
     public ConditionFactory(){
@@ -33,7 +33,7 @@ public class ConditionFactory {
         EvaluateBase evaluateObj = null;
         try {
             while(result.next()){
-                conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
+                conditionJson = objmapper.readTree(result.getString(CONDITION_JSON));
                 condition = new ConditionBase();
                 evaluateObj = createOperation(conditionJson);
                 condition.setEvaluateObj(evaluateObj);
@@ -48,14 +48,15 @@ public class ConditionFactory {
 
         JsonNode operationJson = null;
         EvaluateBase evaluateObj = null;
-        int operationType = conditionJson.findValue("OperationType").asInt();
+
+        int operationType = conditionJson.path("OperationType").asInt();
 
         switch (operationType){
             case 0: 
             case 1: 
             { /*** Equals / Compare ***/
                 EvaluateCompare evaluateCompareObj = new EvaluateCompare();
-                operationJson = conditionJson.findValue("Operation");
+                operationJson = conditionJson.path("Operation");
                 evaluateCompareObj.setEvaluateObj(createOperation(operationJson.get(0)));
                 evaluateCompareObj.setEvaluateObj(createOperation(operationJson.get(1)));
                 evaluateObj = evaluateCompareObj;
@@ -65,7 +66,7 @@ public class ConditionFactory {
             case 3:
             { /*** Or / And ***/
                 EvaluateLogical evaluateLogicalObj = new EvaluateLogical();
-                operationJson = conditionJson.findValue("Operation");
+                operationJson = conditionJson.path("Operation");
                 evaluateLogicalObj.setEvaluateObj(createOperation(operationJson.get(0)));
                 evaluateLogicalObj.setEvaluateObj(createOperation(operationJson.get(1)));
                 evaluateObj = evaluateLogicalObj;
@@ -75,8 +76,8 @@ public class ConditionFactory {
             case 5:
             { /*** Get Element/ Input ***/
                 EvaluateElement evaluateElementObj = new EvaluateElement();
-                evaluateElementObj.setParamName(conditionJson.findValue("ParamName"));
-                evaluateElementObj.setParamType(conditionJson.findValue("ParamType").asInt());
+                evaluateElementObj.setParamName(conditionJson.path("ParamName"));
+                evaluateElementObj.setParamType(conditionJson.path("ParamType").asInt());
                 evaluateObj = evaluateElementObj;
                 break;
             }
@@ -95,7 +96,7 @@ public class ConditionFactory {
             ResultSet result = datamanage.getData(conditionTableName,KeyParamName,conditionType);
             try {
                 result.next();
-                conditionJson = objmapper.readTree(result.getBytes(CONDITION_JSON));
+                conditionJson = objmapper.readTree(result.getString(CONDITION_JSON));
                 ConditionBase condition = new ConditionBase();
                 EvaluateBase evaluateObj = null;
                 evaluateObj = createOperation(conditionJson);

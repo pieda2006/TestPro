@@ -35,12 +35,13 @@ public class CountController extends Controller {
      * requests by an entry in the <code>routes</code> config file.
      */
     public Result count() {
+/*
         RequestBody body = request().body();
         JsonNode jsonNode = body.asJson();
-        JsonNode jsonData = jsonNode.findValue("ConditionType");
+        JsonNode jsonData = jsonNode.path("ConditionType");
         int ConditionType1 = jsonData.asInt();
-        jsonData = jsonNode.findValue("TrueNextCondition");
-        jsonData = jsonData.findValue("ConditionType");
+        jsonData = jsonNode.path("TrueNextCondition");
+        jsonData = jsonData.path("ConditionType");
         int ConditionType2 = jsonData.asInt();
         Iterator<Map.Entry<String,JsonNode>> jsonIte = jsonNode.fields();
         Map.Entry<String,JsonNode> jsonmap = null;
@@ -48,18 +49,18 @@ public class CountController extends Controller {
         ObjectMapper objectmapper = new ObjectMapper();
         boolean bool = false;
         LinkedHashMap<String, Object> linkhash = new LinkedHashMap<String, Object>();
-
+*/
         /*** Json Element Read
         while(jsonIte.hasNext()){
             jsonmap = jsonIte.next();
             resultmessge = resultmessge + jsonmap.getKey() + " : " + jsonmap.getValue().asText() + " : " + jsonmap.getValue().isInt() + "\n";
         } ***/
         /*** Array 
-        jsonData = jsonNode.findValue("ConditionType");
-        resultmessge = jsonData.get(1).findValue("test2").asText();
+        jsonData = jsonNode.path("ConditionType");
+        resultmessge = jsonData.get(1).path("test2").asText();
         resultmessge = "" + jsonData.has(2);
         ***/
-        /*** Create JsonData ***/
+        /*** Create JsonData 
         TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
         jsonentry.put("test","test");
         jsonentry.put("tkc","tkc");
@@ -72,21 +73,21 @@ public class CountController extends Controller {
             //resultmessge = objectmapper.writeValueAsString(jsonentry);
         } catch (Exception e) {
         }  
-
-        /*** Json Create from String ***/
+***/
+        /*** Json Create from String
         try {
-            jsonNode = objectmapper.readTree(/*objectmapper.writeValueAsString(jsonentry)*/"1");
+            jsonNode = objectmapper.readTree(objectmapper.writeValueAsString(jsonentry));
         } catch (Exception e) {
             resultmessge = e.getClass().getSimpleName();
         }
+***/
+        //resultmessge = jsonNode.path("test").asText();
 
-        //resultmessge = jsonNode.findValue("test").asText();
 
-
-        /*** JsonNode to String ***/
+        /*** JsonNode to String 
         resultmessge = jsonNode.toString();
-
-        try {
+***/
+        //try {
         //    LinkedHashMap tree = objectmapper.readValue(/*resultmessge*/"1", LinkedHashMap.class);
         //    resultmessge = objectmapper.writeValueAsString(tree);
         //    resultmessge = Integer.toString((int)tree.get("PCS"));
@@ -94,11 +95,12 @@ public class CountController extends Controller {
         //    tree = (LinkedHashMap)tree.get("TrueNextCondition");
         //    resultmessge = Integer.toString((int)tree.get("ConditionType"));
         //    bool = tree.getClass().isInstance(testTree);
-        } catch (Exception e) {
-            resultmessge = e.getClass().getSimpleName();
-        }
-        return ok("\n--------------------\n" + resultmessge + "\n--------------------\n");
-        //return ok("test ok");
+        //} catch (Exception e) {
+        //    resultmessge = e.getClass().getSimpleName();
+        //}
+        //return ok("\n--------------------\n" + resultmessge + "\n--------------------\n");
+        return ok("{\"RESULT\":\"OK\"}");
+        //return ok("\n--------------------\n" + request().uri() + "\n--------------------\n");
     }
 
 }

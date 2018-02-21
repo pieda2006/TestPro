@@ -8,9 +8,10 @@ public class DataManager {
 
     private static DataManager myinstance = null;
 
-    private String url = "jdbc:mysql://some-mysql/Database";
+    //private String url = "jdbc:mysql://some-mysql.playnetwork/EPC";
+    private String url = "jdbc:mysql://10.43.111.9/EPC";
     private String user = "root";
-    private String pass = "my-secret";
+    private String pass = "my-secret-pw";
     private String table = "CONFIG";
     private DataBaseAccesser database = null;
     private JsonNode configValue = null;
@@ -27,9 +28,9 @@ public class DataManager {
         String sql = "select * from " + table + ";";
         ResultSet result = database.executeQuery(sql);
         try {
-            result.next();
+            boolean boolvalue = result.next();
             ObjectMapper objmapper = new ObjectMapper();
-            configValue = objmapper.readTree(result.getBytes(1));
+            configValue = objmapper.readTree(result.getString(2));
         } catch(Exception e) {
             configValue = null;
         }

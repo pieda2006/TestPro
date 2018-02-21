@@ -1,0 +1,28 @@
+■■■ 目次 ■■■
+
+■ 001 ■ ConditionType = 0
+
+■■■ 本文 ■■■
+
+■ 001 ■ ConditionType = 0 MME / HSSのイベントハンドル
+
+insert into CONDITION_TABLE values(0,
+'{
+    "OperationType":0,
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "REQUEST_TYPE"
+            ],
+            "ParamType":1
+        },
+        {
+            "OperationType":5,
+            "ParamName":[
+                "REQUEST_TYPE"
+            ],
+            "ParamType":1
+        }
+    ]
+}');

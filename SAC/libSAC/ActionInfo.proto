@@ -1,8 +1,0 @@
-syntax = "proto3";
-package SAC;
-
-message ActionInfo {
-    int32 ActionID = 1;
-    string ChargingRuleName = 2;
-    int32 Result = 3;
-}

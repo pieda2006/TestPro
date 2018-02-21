@@ -1,7 +1,0 @@
-syntax = "proto3";
-package SAC;
-
-message PolicyCounter {
-    int32 PID = 1;
-    int32 PCS = 2;
-}

@@ -17,7 +17,6 @@ class EvaluateElement extends EvaluateBase {
     public ResultInfo evaluateCondition(JsonNode reqJson, JsonNode conditionJson){
         ResultInfo resultinfo = new ResultInfo();
 
-        String getJson = paramName.get(0).asText();
         JsonNode findJson = null;
         if(operationType == REQUEST){
             findJson = reqJson;
@@ -25,7 +24,7 @@ class EvaluateElement extends EvaluateBase {
             findJson = conditionJson;
         }
         for(int count = 0; paramName.has(count); count++){
-            findJson = findJson.findValue(paramName.get(count).asText());
+            findJson = findJson.path(paramName.get(count).asText());
         }
 
         if(paramType == INTPARM){

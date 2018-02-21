@@ -16,8 +16,12 @@ class ConditionBase {
     /*** Constructer ***/
 
     public ConditionBase(){
+        trueAction = new ArrayList<ActionBase>();
+        falseAction = new ArrayList<ActionBase>();
     }
     public ConditionBase(ConditionBase copyObj){
+        trueAction = new ArrayList<ActionBase>();
+        falseAction = new ArrayList<ActionBase>();
         setEvaluateObj(copyObj.getEvaluateObj());
     }
     public int getConditionType(){
@@ -51,6 +55,7 @@ class ConditionBase {
         conditionJson = input;
     }
     public ConditionBase evaluateCondition(JsonNode reqJson, ArrayList<ActionBase> actionList){
+
         ResultInfo resultinf = null;
         resultinf = evaluateObj.evaluateCondition(reqJson, conditionJson);
         if(resultinf.getBoolResult() == true){

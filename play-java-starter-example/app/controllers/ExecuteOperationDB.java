@@ -13,8 +13,8 @@ class ExecuteOperationDB extends ExecuteBase {
     private JsonNode dataJson;
     private int keyType;
     private int tableKind;
-    private int keyKind;
     private int valueKind;
+    private int keyKind;
     private int dataKind;
 
     public final static int REQUEST = 0;
@@ -27,27 +27,28 @@ class ExecuteOperationDB extends ExecuteBase {
     public final static int DELETE = 3;
     public final static int INTKEY = 0;
     public final static int STRINGKEY = 1;
-
+ 
     public ExecuteOperationDB(){
     }
 
     void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
+
         DataManager datamanage = DataManager.getInstance();
         JsonNode opeJson;
         Object opetree;
         String opetable = null;
         String opekey = null;
-        String opevalue = null;
         String opedata = null;
- 
+        String opevalue = null;
+
         int opeintkey;
         ObjectMapper objectmap = new ObjectMapper();
-        
         opetable = getStringFromJson(tableName, tableKind, reqJson, actionJson, distJson, ansJson);
         opekey = getStringFromJson(key, keyKind, reqJson, actionJson, distJson, ansJson);
         opevalue = getStringFromJson(value, valueKind, reqJson, actionJson, distJson, ansJson);
-        opedata = getStringFromJson(value, dataKind, reqJson, actionJson, distJson, ansJson);
-
+        if(operationType != GET){
+            opedata = getStringFromJson(dataJson, dataKind, reqJson, actionJson, distJson, ansJson);
+        }
 
         ResultSet resultSet = null;
         if(operationType == GET){
@@ -57,7 +58,8 @@ class ExecuteOperationDB extends ExecuteBase {
                 resultSet = datamanage.getData(opetable, opekey, opevalue);
             }
             try {
-                LinkedHashMap resultTree = objectmap.readValue(resultSet.getBytes(1), LinkedHashMap.class);
+                resultSet.next();
+                LinkedHashMap resultTree = objectmap.readValue(resultSet.getString(2), LinkedHashMap.class);
                 setResultJson(resultTree, dataJson, distJson, ansJson);
             } catch (Exception e){
                 //Error Action
@@ -89,13 +91,20 @@ class ExecuteOperationDB extends ExecuteBase {
         Object opetree = null;
         Object nextopetree = null;
         if(dataKind == DISTRIBUTION){
-            nextopetree = distJson;
+            opetree = distJson;
         } else {
-            nextopetree = ansJson;
+            opetree = ansJson;
         }
+
         int count = 0;
         for(count = 0; inputJson.has(count); count++){
-            opetree = nextopetree;
+            if(count != 0){
+                if(nextopetree == null){
+                    nextopetree = new LinkedHashMap();
+                    ((LinkedHashMap)opetree).put(inputJson.get(count-1).asText(), nextopetree);
+                }
+                opetree = nextopetree;
+            }
             nextopetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText());
         }
         if(nextopetree == null){
@@ -119,7 +128,7 @@ class ExecuteOperationDB extends ExecuteBase {
                 opeJson = actionJson;
             }
             for(int count = 0; inputJson.has(count); count++){
-                opeJson = opeJson.findValue(inputJson.get(count).asText());
+                opeJson = opeJson.path(inputJson.get(count).asText());
             }
             if(opeJson.isInt()){
                 retString = Integer.toString(opeJson.asInt());
@@ -162,9 +171,6 @@ class ExecuteOperationDB extends ExecuteBase {
     void setKey(JsonNode jsonKey){
         key = jsonKey;
     }
-    void setValue(JsonNode jsonValue){
-        value = jsonValue;
-    }
     void setResult(JsonNode jsonData){
         dataJson = jsonData;
     }
@@ -174,13 +180,16 @@ class ExecuteOperationDB extends ExecuteBase {
     void setKeyKind(int kind){
         keyKind = kind;
     }
-    void setValueKind(int kind){
-        valueKind = kind;
-    }
     void setResultKind(int kind){
         dataKind = kind;
     }
     void setkeyType(int type){
         keyType = type;
+    }
+    void setValue(JsonNode jsonData){
+        value = jsonData;
+    }
+    void setValueKind(int kind){
+        valueKind = kind;
     }
 }

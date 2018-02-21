@@ -1,0 +1,827 @@
+■■■ 目次 ■■■
+
+■ 001 ■ ActionType = 0 HSSへのリクエスト文生成。
+■ 002 ■ ActionType = 1 HSSへのリクエスト送信。
+■ 003 ■ ActionType = 2 HSSのDB取得し設定。MMEでIMSIに括りつくXRESを取得する。MMEでIMSIに括りつくK_ASMEを取得する。
+■ 004 ■ ActionType = 3 乱数からxresを算出。
+■ 005 ■ ActionType = 4 乱数からautnを算出。
+■ 006 ■ ActionType = 5 K_ASMEを算出。
+■ 007 ■ ActionType = 6 HSSからのアンサーを設定。
+■ 008 ■ ActionType = 7 IMSIとXRESのマッピングを保持。
+■ 009 ■ ActionType = 8 IMSIとK_ASMEのマッピングを保持。
+■ 010 ■ ActionType = 9 e-NodeBへのアンサーを生成。
+■ 011 ■ ActionType = 11 XRESを保持する。
+■ 012 ■ ActionType = 12 K_ASMEを保持する。
+■ 013 ■ ActionType = 13 MMEからMMEに内部イベント発行
+■ 014 ■ ActionType = 14 
+■ 015 ■ ActionType = 15 
+
+■■■ 本文 ■■■
+
+■ 013 ■ ActionType = 13 MMEからMMEに内部イベント発行
+
+insert into ACTION_TABLE values(13,
+'{
+    "Operation":[
+        {
+            "OperationType":5,
+            "SendTo":[
+                "URL",
+            ],
+            "URLKind":1,
+            "Method":9,
+            "SendValue":[
+                "RequestInfo"
+            ],
+            "ValueKind":2,
+            "Result":[
+                "ResponseInfo",
+            ],
+            "DataKind":2,
+        }
+    ]
+}';
+
+■ 012 ■ ActionType = 12 K_ASMEを保持する。
+
+insert into ACTION_TABLE values(12,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "K_ASME"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "RequestInfo",
+                "K_ASME"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        }
+
+    ]
+}';
+
+■ 011 ■ ActionType = 11 XRESを保持する。
+
+insert into ACTION_TABLE values(11,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "XRES"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "RequestInfo",
+                "XRES"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "IMSI"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "RequestInfo",
+                "IMSI"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        }
+    ]
+}';
+
+■ 001 ■ ActionType = 0 HSSへのリクエスト文生成。
+
+insert into ACTION_TABLE values(0,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "IMSI"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "RequestInfo",
+                "IMSI"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "SQN"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "RequestInfo",
+                "SQN"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "TAI"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "RequestInfo",
+                "TAI"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "NW_TYPE"
+            ],
+            "ParamKind":1,
+            "ParamValue":[
+                "RequestInfo",
+                "NW_TYPE"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "SN_ID"
+            ],
+            "ParamKind":1,
+            "ParamValue":[
+                "RequestInfo",
+                "SN_ID"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "REQUEST_TYPE"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "RequestInfo",
+                "REQUEST_TYPE"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        }
+    ]
+}');
+
+■ 002 ■ ActionType = 1 HSSへのリクエスト送信。
+
+insert into ACTION_TABLE values(1,
+'{
+    "Operation":[
+        {
+            "OperationType":5,
+            "SendTo":[
+                "URI"
+            ],
+            "URLKind":1,
+            "Method":2,
+            "SendValue":[
+                "RequestInfo"
+            ],
+            "ValueKind":2,
+            "Result":[
+                "ResponseInfo"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "ResponseInfo"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo"
+            ],
+            "ParamType":2,
+            "ValueKind":2
+        }
+    ]
+}');
+
+■ 003 ■ ActionType = 2 HSSのDB取得し設定。MMEでIMSIに括りつくXRESを取得する。
+
+insert into ACTION_TABLE values(2,
+'{
+    "Operation":[
+        {
+            "OperationType":0,
+            "TableName":[
+                "TABLENAME"
+            ],
+            "TableKind":1,
+            "Value":[
+                "IMSI"
+            ],
+            "ValueKind":0,
+            "Key":[
+                "KEY"
+            ],
+            "KeyKind":1,
+            "Data":[
+                "ResponseInfo"
+            ],
+            "DataKind":2
+        }
+    ]
+}');
+
+
+
+■ 004 ■ ActionType = 3 乱数からxresを算出。
+
+insert into ACTION_TABLE values(3,
+'{
+    "Operation":[
+        {
+            "OperationType":10,
+            "Data":[
+                "ResponseInfo",
+                "RandmNum"
+            ],
+            "DataKind":2,
+            "Min":[
+                "Min"
+            ],
+            "MinKind":1,
+            "Max":[
+                "Max"
+            ],
+            "MaxKind":1
+        },
+        {
+            "OperationType":8,
+            "Right":[
+                "ResponseInfo",
+                "RandmNum"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "KEY_ID"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM1"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":6,
+            "Right":[
+                "ResponseInfo",
+                "NUM1"
+            ],
+            "RightType":2,
+            "Left":[
+                "SQN"
+            ],
+            "LeftType":0,
+            "Result":[
+                "ResponseInfo",
+                "NUM2"
+            ],
+            "DataKind":2
+        }
+    ]
+}');
+
+■ 005 ■ ActionType = 4 乱数からautnを算出。
+
+insert into ACTION_TABLE values(4,
+'{
+    "Operation":[
+        {
+            "OperationType":7,
+            "Right":[
+                "ONE"
+            ],
+            "RightType":1,
+            "Left":[
+                "ResponseInfo",
+                "RandmNum"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM3"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":6,
+            "Right":[
+                "ONE"
+            ],
+            "RightType":1,
+            "Left":[
+                "ResponseInfo",
+                "KEY_ID"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM4"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":8,
+            "Right":[
+                "ResponseInfo",
+                "NUM3"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "NUM4"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM5"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":7,
+            "Right":[
+                "SQN"
+            ],
+            "RightType":0,
+            "Left":[
+                "ResponseInfo",
+                "NUM5"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM6"
+            ],
+            "DataKind":2
+        }
+    ]
+}');
+
+■ 006 ■ ActionType = 5 K_ASMEを算出。
+
+insert into ACTION_TABLE values(5,
+'{
+    "Operation":[
+        {
+            "OperationType":6,
+            "Right":[
+                "ONE"
+            ],
+            "RightType":1,
+            "Left":[
+                "ResponseInfo",
+                "RandmNum"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM7"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":7,
+            "Right":[
+                "ONE"
+            ],
+            "RightType":1,
+            "Left":[
+                "ResponseInfo",
+                "KEY_ID"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM8"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":8,
+            "Right":[
+                "ResponseInfo",
+                "NUM7"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "NUM8"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM9"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":6,
+            "Right":[
+                "ONE"
+            ],
+            "RightType":1,
+            "Left":[
+                "SQN"
+            ],
+            "LeftType":0,
+            "Result":[
+                "ResponseInfo",
+                "NUM10"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":7,
+            "Right":[
+                "ResponseInfo",
+                "NUM10"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "NUM9"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM11"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":8,
+            "Right":[
+                "ResponseInfo",
+                "NUM7"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "NUM4"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM12"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":7,
+            "Right":[
+                "ONE"
+            ],
+            "RightType":1,
+            "Left":[
+                "SQN"
+            ],
+            "LeftType":0,
+            "Result":[
+                "ResponseInfo",
+                "NUM13"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":7,
+            "Right":[
+                "ResponseInfo",
+                "NUM13"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "NUM12"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM14"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":8,
+            "Right":[
+                "SQN"
+            ],
+            "RightType":0,
+            "Left":[
+                "ResponseInfo",
+                "NUM11"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM15"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":8,
+            "Right":[
+                "SN_ID"
+            ],
+            "RightType":0,
+            "Left":[
+                "ResponseInfo",
+                "NUM14"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM16"
+            ],
+            "DataKind":2
+        },
+        {
+            "OperationType":6,
+            "Right":[
+                "ResponseInfo",
+                "NUM15"
+            ],
+            "RightType":2,
+            "Left":[
+                "ResponseInfo",
+                "NUM16"
+            ],
+            "LeftType":2,
+            "Result":[
+                "ResponseInfo",
+                "NUM17"
+            ],
+            "DataKind":2
+        }
+    ]
+}');
+
+■ 007 ■ ActionType = 6 HSSからのアンサーを設定。
+
+insert into ACTION_TABLE values(6,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "NUM2"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "XRES"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "NUM6"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "AUTN"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "RandmNum"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "RAND"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "NUM17"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "K_ASME"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        }
+    ]
+}');
+
+■ 008 ■ ActionType = 7 IMSIとXRESのマッピングを保持。
+
+insert into ACTION_TABLE values(7,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "IMSI"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "IMSI_XRES_VALUE",
+                "IMSI"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "XRES"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "IMSI_XRES_VALUE",
+                "XRES"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":1,
+            "TableName":[
+                "TableName"
+            ],
+            "TableKind":1,
+            "Key":[
+                "KEY"
+            ],
+            "KeyType":0,
+            "KeyKind":1,
+            "Data":[
+                "IMSI_XRES_VALUE"
+            ],
+            "DataKind":2,
+            "Value":[
+                "IMSI_XRES_VALUE",
+                "IMSI"
+            ],
+            "ValueKind":2
+        }
+    ]
+}');
+
+■ 009 ■ ActionType = 8 IMSIとK_ASMEのマッピングを保持。
+
+insert into ACTION_TABLE values(8,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "IMSI"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "UEKEY_NAS_KEYS_MAP",
+                "IMSI"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "K_ASME"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "UEKEY_NAS_KEYS_MAP",
+                "K_ASME"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":1,
+            "TableName":[
+                "TableName"
+            ],
+            "TableKind":1,
+            "Key":[
+                "KEY"
+            ],
+            "KeyType":0,
+            "KeyKind":1,
+            "Data":[
+                "UEKEY_NAS_KEYS_MAP"
+            ],
+            "DataKind":2,
+            "Value":[
+                "UEKEY_NAS_KEYS_MAP",
+                "IMSI"
+            ],
+            "ValueKind":2
+        }
+    ]
+}');
+
+■ 010 ■ ActionType = 9 e-NodeBへのアンサーを生成。
+
+insert into ACTION_TABLE values(9,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "RAND"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "RAND"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "AUTN"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "AUTN"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "ResponseInfo",
+                "K_ASME"
+            ],
+            "ParamKind":2,
+            "ParamValue":[
+                "ResponseInfo",
+                "KSI_ASME"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "REQUEST_TYPE"
+            ],
+            "ParamKind":1,
+            "ParamValue":[
+                "ResponseInfo",
+                "REQUEST_TYPE"
+            ],
+            "ParamType":1,
+            "ValueKind":3
+        }
+    ]
+}');

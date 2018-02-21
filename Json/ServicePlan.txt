@@ -1,0 +1,108 @@
+Å°Å°Å° ñ⁄éü Å°Å°Å°
+
+Å° 001 Å° /mme
+Å° 002 Å° /hss
+
+Å°Å°Å° ñ{ï∂ Å°Å°Å°
+
+Å° 001 Å° 
+
+insert into SERVICE_PLAN values('/mme',
+'{
+    "ConditionType":0,
+    "REQUEST_TYPE":"AUTHENTICATION_STEP_ONE",
+    "TrueAction":[
+        {
+            "ActionType":0,
+            "NW_TYPE":"UMTS",
+            "SN_ID":1
+        },
+        {
+            "ActionType":1,
+            "URI":"http://10.43.111.9:9000/hss"
+        },
+        {
+            "ActionType":7,
+            "TableName":"IMSI_XRES_MAPPING",
+            "KEY":"IMSI"
+        },
+        {
+            "ActionType":8,
+            "TableName":"UEKEY_NAS_KEYS_MAP",
+            "KEY":"IMSI"
+        },
+        {
+            "ActionType":9,
+            "REQUEST_TYPE":"AUTHENTICATION_STEP_TWO"
+        }
+    ],
+    "FalseAction":null,
+    "TrueNextCondition":null,
+    "FalseNextCondition":{
+        "ConditionType":0,
+        "REQUEST_TYPE":"AUTHENTICATION_STEP_THREE",
+        "TrueAction":[
+            {
+                "ActionType":2
+                "TableName":"IMSI_XRES_MAPPING",
+                "KEY":"IMSI"
+            },
+            {
+                "ActionType":11,
+            },
+            {
+                "ActionType":2
+                "TableName":"IMSI_XRES_MAPPING",
+                "KEY":"IMSI"
+            },
+            {
+                "ActionType":12,
+            }
+            {
+                "ActionType":12,
+            },
+            {
+                "ActionType":13,
+                "URI":"http://10.43.111.9:9000/mmeauth"
+            }
+        ],
+        "FalseAction":null,
+        "TrueNextCondition":null,
+        "FalseNextCondition":null
+    }
+}');
+
+Å° 001 Å° 
+
+insert into SERVICE_PLAN values('/hss',
+'{
+    "ConditionType":0,
+    "REQUEST_TYPE":"AUTHENTICATION_STEP_ONE",
+    "TrueAction":[
+        {
+            "ActionType":2,
+            "TABLENAME":"UE_DATA",
+            "KEY":"IMSI"
+        },
+        {
+            "ActionType":3,
+            "Max":84,
+            "Min":25
+        },
+        {
+            "ActionType":4,
+            "ONE":1
+        },
+        {
+            "ActionType":5,
+            "ONE":1
+        },
+        {
+            "ActionType":6
+        }
+    ],
+    "FalseAction":null,
+    "TrueNextCondition":null,
+    "FalseNextCondition":null
+}');
+

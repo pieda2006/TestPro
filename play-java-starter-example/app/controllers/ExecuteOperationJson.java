@@ -2,7 +2,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+ 
 class ExecuteOperationJson extends ExecuteBase {
 
     private JsonNode paramName;
@@ -27,9 +27,9 @@ class ExecuteOperationJson extends ExecuteBase {
         JsonNode opeJson = null;
         JsonNode setJson = null;
         Object opeTree = null;
-	    Object setTree = null;
-	    Object setnextTree = null;
-	    Object registObj = null;
+        Object setTree = null;
+        Object setnextTree = null;
+        Object registObj = null;
         int opecount = 0;
         int setcount = 0;
         ObjectMapper objectmap = new ObjectMapper();
@@ -42,7 +42,7 @@ class ExecuteOperationJson extends ExecuteBase {
                 opeJson = actionJson;
             }
             for(opecount = 0; paramName.has(opecount); opecount++){
-                opeJson = opeJson.findValue(paramName.get(opecount).asText());
+                opeJson = opeJson.path(paramName.get(opecount).asText());
             }
             if(opeJson.isInt()){
                 registObj = opeJson.asInt();
@@ -66,16 +66,23 @@ class ExecuteOperationJson extends ExecuteBase {
             }
             registObj = opeTree;
         }
+
         /*** Set Data ***/
         if(valueKind == DISTRIBUTION){
             setTree = distJson;
         } else {
             setTree = ansJson;
         }
-            
+
         for(setcount = 0; paramValue.has(setcount); setcount++){
-            setTree = setnextTree;
-            setnextTree = ((LinkedHashMap)opeTree).get(paramValue.get(setcount).asText());
+            if(setcount != 0){
+                if(setnextTree == null){
+                    setnextTree = new LinkedHashMap();
+                    ((LinkedHashMap)setTree).put(paramValue.get(setcount-1).asText(), setnextTree);
+                }
+                setTree = setnextTree;
+            }
+            setnextTree = ((LinkedHashMap)setTree).get(paramValue.get(setcount).asText());
         }
         if(setnextTree == null){
             ((LinkedHashMap)setTree).put(paramValue.get(setcount-1).asText(), registObj);

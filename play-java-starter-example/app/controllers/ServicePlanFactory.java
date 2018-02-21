@@ -9,12 +9,11 @@ class ServicePlanFactory {
 
     private static ServicePlanFactory myinstance = null;
     private static final String servicePlanTableName = "SERVICE_PLAN";
-    private static final String KeyParamName = "URI";
-    private static final int PLAN_JSON = 1;
+    private static final String KeyParamName = "PLANID";
     HashMap<String,ConditionBase> planHash = null;
 
-    private final int PLAN_NAME = 0;
-    private final int PLAN_VALUE = 1;
+    private final int PLAN_NAME = 1;
+    private final int PLAN_VALUE = 2;
     public static final int ServicePlanFactory_OK = 0;
 
     public ServicePlanFactory(){
@@ -34,11 +33,12 @@ class ServicePlanFactory {
         if(conditionObj == null){
             ObjectMapper objmapper = new ObjectMapper();
             DataManager datamanage = DataManager.getInstance();
+
             ResultSet result = datamanage.getData(servicePlanTableName,KeyParamName,uri);
             JsonNode conditionJson = null;
             try {
                 result.next();
-                conditionJson = objmapper.readTree(result.getBytes(PLAN_JSON));
+                conditionJson = objmapper.readTree(result.getString(PLAN_VALUE));
                 conditionObj = createCondition(conditionJson);
                 String planName;
                 planName = result.getString(PLAN_NAME);
@@ -59,7 +59,7 @@ class ServicePlanFactory {
         String planName = null;
         try {
             while(result.next()){
-                servicePlan = objmapper.readTree(result.getBytes(PLAN_VALUE));
+                servicePlan = objmapper.readTree(result.getString(PLAN_VALUE));
                 condition = createCondition(servicePlan);
                 planName = result.getString(PLAN_NAME);
                 planHash.put(planName, condition);
@@ -73,8 +73,7 @@ class ServicePlanFactory {
         
         ConditionFactory conditionfact = ConditionFactory.getInstance();
         ActionFactory actionfact = ActionFactory.getInstance();
-        int conditionType = planJson.findValue("ConditionType").asInt();
-
+        int conditionType = planJson.path("ConditionType").asInt();
         ConditionBase conditionObj = conditionfact.getCondition(conditionType);
 
         Map.Entry<String,JsonNode> jsonmap = null;
@@ -102,15 +101,48 @@ class ServicePlanFactory {
         conditionObj.setConditionJson(condiitonjson);
         ActionBase actionObj = null;
         JsonNode actionjson = null;
-        int actionType;
+        int actionType = 0;
         JsonNode actionInputJson = null;
-        actionjson = planJson.findValue("TrueAction");
+        actionjson = planJson.path("TrueAction");
+
         if(!actionjson.isNull()){
             for(int count = 0; actionjson.has(count); count++){
-                actionType = actionjson.findValue("ActionType").get(count).asInt();
+                actionType = actionjson.get(count).path("ActionType").asInt();
                 actionObj = actionfact.getAction(actionType);
                 jsonentry = new TreeMap<String,Object>();
-                jsonIte = actionjson.fields();
+                jsonIte = actionjson.get(count).fields();
+
+                while(jsonIte.hasNext()){
+                    jsonmap = jsonIte.next();
+
+                    if(!jsonmap.getKey().equals("Operation")){
+                        if(jsonmap.getValue().isInt()){
+                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
+                        } else if(jsonmap.getValue().isTextual()){
+                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
+                        }
+                    }
+                }
+
+                objmapper = new ObjectMapper();
+                try {
+                    actionInputJson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
+                } catch (Exception e) {
+                    //Error Action
+                }
+
+                actionObj.setActionJson(actionInputJson);
+                conditionObj.setAction(actionObj,true);
+
+            }
+        }
+        actionjson = planJson.path("FalseAction");
+        if(!actionjson.isNull()){
+            for(int count = 0; actionjson.has(count); count++){
+                actionType = actionjson.path("ActionType").get(count).asInt();
+                actionObj = actionfact.getAction(actionType);
+                jsonentry = new TreeMap<String,Object>();
+                jsonIte = actionjson.get(count).fields();
                 while(jsonIte.hasNext()){
                     jsonmap = jsonIte.next();
                     if(!jsonmap.getKey().equals("Operation")){
@@ -128,48 +160,24 @@ class ServicePlanFactory {
                     //Error Action
                 }
                 actionObj.setActionJson(actionInputJson);
+                conditionObj.setAction(actionObj,false);
             }
         }
-        conditionObj.setAction(actionObj,true);
-        actionjson = planJson.findValue("FalseAction");
-        if(!actionjson.isNull()){
-            for(int count = 0; actionjson.has(count); count++){
-                actionType = actionjson.findValue("ActionType").get(count).asInt();
-                actionObj = actionfact.getAction(actionType);
-                jsonentry = new TreeMap<String,Object>();
-                jsonIte = actionjson.fields();
-                while(jsonIte.hasNext()){
-                    jsonmap = jsonIte.next();
-                    if(!jsonmap.getKey().equals("Operation")){
-                        if(jsonmap.getValue().isInt()){
-                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
-                        } else if(jsonmap.getValue().isTextual()){
-                            jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
-                        }
-                    }
-                }
-                objmapper = new ObjectMapper();
-                try {
-                    actionInputJson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
-                } catch (Exception e) {
-                    //Error Action
-                }
-                actionObj.setActionJson(actionInputJson);
-            }
-        }
-        conditionObj.setAction(actionObj,false);
+
+
         JsonNode conditionJson = null;
         ConditionBase nextCondition = null;
-        conditionJson = planJson.findValue("TrueNextCondition");
+        conditionJson = planJson.path("TrueNextCondition");
         if(!conditionJson.isNull()){
             nextCondition = createCondition(conditionJson);
             conditionObj.setNextCondition(nextCondition,true);
         }
-        conditionJson = planJson.findValue("FalseNextCondition");
+        conditionJson = planJson.path("FalseNextCondition");
         if(!conditionJson.isNull()){
             nextCondition = createCondition(conditionJson);
             conditionObj.setNextCondition(nextCondition,false);
         }
+
         return conditionObj;
     }
 }
