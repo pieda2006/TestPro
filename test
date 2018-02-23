@@ -1,0 +1,187 @@
+¢£ 006 ¢£ setupTunnel¼ê½ç
+
+
+
+¡ÚMME¡Û
+
+insert into SERVICE_PLAN values('/mme',
+'{
+    "ConditionType":0,
+    "REQUEST_TYPE":"AUTHENTICATION_STEP_ONE",
+    "TrueAction":[
+        {
+            "ActionType":0,
+            "NW_TYPE":"UMTS",
+            "SN_ID":1
+        },
+        {
+            "ActionType":1,
+            "URI":"http://10.43.111.9:9000/hss"
+        },
+        {
+            "ActionType":7,
+            "TableName":"IMSI_XRES_MAPPING",
+            "KEY":"IMSI"
+        },
+        {
+            "ActionType":8,
+            "TableName":"UEKEY_NAS_KEYS_MAP",
+            "KEY":"IMSI"
+        },
+        {
+            "ActionType":9,
+            "REQUEST_TYPE":"AUTHENTICATION_STEP_TWO"
+        }
+    ],
+    "FalseAction":null,
+    "TrueNextCondition":null,
+    "FalseNextCondition":{
+        "ConditionType":0,
+        "REQUEST_TYPE":"AUTHENTICATION_STEP_THREE",
+        "TrueAction":[
+            {
+                "ActionType":2
+                "TableName":"IMSI_XRES_MAPPING",
+                "KEY":"IMSI"
+            },
+            {
+                "ActionType":10,
+            },
+            {
+                "ActionType":2
+                "TableName":"IMSI_XRES_MAPPING",
+                "KEY":"IMSI"
+            },
+            {
+                "ActionType":11,
+            },
+            {
+                "ActionType":12,
+                "URI":"http://10.43.111.9:9000/mmeauth"
+            }
+        ],
+        "FalseAction":null,
+        "TrueNextCondition":null,
+        "FalseNextCondition":{
+            "ConditionType":0,
+            "REQUEST_TYPE":"SEND_APN",
+            "TrueAction":[
+                {
+                    "ActionType":19,
+                    "URL":"http://10.43.111.9:9000/spgw"
+                }
+            ],
+            "FalseAction":null,
+            "TrueNextCondition":null,
+            "FalseNextCondition":null
+        }
+    }
+}');
+
+¢£¾ò·ï
+
+RequestType
+
+
+¢£¥¢¥¯¥·¥ç¥ó
+1. SGW¤ØAPN¤òÄÌÃÎ¡£
+
+insert into ACTION_TABLE values(19,
+'{
+    "Operation":[
+        {
+            "OperationType":4,
+            "ParamName":[
+                "APN"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "RequestInfo",
+                "APN"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":4,
+            "ParamName":[
+                "APN"
+            ],
+            "ParamKind":0,
+            "ParamValue":[
+                "RequestInfo",
+                "APN"
+            ],
+            "ParamType":1,
+            "ValueKind":2
+        },
+        {
+            "OperationType":5,
+            "SendTo":[
+                "URL",
+            ],
+            "URLKind":1,
+            "Method":2,
+            "SendValue":[
+                "RequestInfo"
+            ],
+            "ValueKind":2,
+            "Result":[
+                "ResponseInfo",
+            ],
+            "DataKind":2,
+        }
+    ]
+}';
+
+
+
+¡ÚS/P-GW¡Û
+
+insert into SERVICE_PLAN values('/spgw',
+'{
+    "ConditionType":0,
+    "REQUEST_TYPE":"IPALLOCATE",
+    "TrueAction":[
+        {
+            "ActionType":20,
+            "TableName":"CREATE_TEID_TABLE"
+        }
+    ],
+    "FalseAction":null,
+    "TrueNextCondition":null,
+    "FalseNextCondition":null
+}');
+
+¢£¾ò·ï
+
+¢£¥¢¥¯¥·¥ç¥ó
+1. tunnelId¤òÊ§¤¤½Ð¤¹¡£
+insert into ACTION_TABLE values(20,
+'{
+    "Operation":[
+{
+    "OperationType":1,
+    "TableName":[
+        "TableName"
+    ],
+    "TableKind":1,
+    "Key":[
+        "IMSI",
+    ],
+    "KeyType":1
+    "KeyKind":1
+    "Data":[
+        "ParamName",
+        "ParamName"
+    ],
+    "DataKind":1
+    "Value":[
+        "ParamName",
+        "ParamName"
+    ],
+    "ValueKind":1
+}
+
+
+2. IP¥¢¥É¥ì¥¹¤òÊ§¤¤½Ð¤¹¡£

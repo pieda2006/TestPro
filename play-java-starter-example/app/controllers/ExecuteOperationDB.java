@@ -46,7 +46,7 @@ class ExecuteOperationDB extends ExecuteBase {
         opetable = getStringFromJson(tableName, tableKind, reqJson, actionJson, distJson, ansJson);
         opekey = getStringFromJson(key, keyKind, reqJson, actionJson, distJson, ansJson);
         opevalue = getStringFromJson(value, valueKind, reqJson, actionJson, distJson, ansJson);
-        if(operationType != GET){
+        if(operationType != GET || operationType != DELETE){
             opedata = getStringFromJson(dataJson, dataKind, reqJson, actionJson, distJson, ansJson);
         }
 
