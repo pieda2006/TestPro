@@ -136,6 +136,18 @@ class ActionFactory {
                 executeObj = executeHmacObj;
                 break;
             }
+            case 12:
+            {
+                ExecuteStringOperation executeStringOpeObj = new ExecuteStringOperation();
+                executeStringOpeObj.setRight(actionJson.path("Right"));
+                executeStringOpeObj.setRightKind(actionJson.path("RightType").asInt());
+                executeStringOpeObj.setLeft(actionJson.path("Left"));
+                executeStringOpeObj.setResult(actionJson.path("Result"));
+                executeStringOpeObj.setLeftKind(actionJson.path("LeftType").asInt());
+                executeStringOpeObj.setResultKind(actionJson.path("DataKind").asInt());
+                executeObj = executeStringOpeObj;
+                break;
+            }
         }
 
         executeObj.setOperationType(operationType);
