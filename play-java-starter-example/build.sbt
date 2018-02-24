@@ -20,3 +20,7 @@ libraryDependencies += ("ch.qos.logback" % "logback-parent" % "1.0.0").exclude("
 
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))
+
+libraryDependencies ++= Seq(
+  ws
+)

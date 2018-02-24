@@ -125,14 +125,14 @@ class ActionFactory {
             case 11:
             {
                 ExecuteHmac executeHmacObj = new ExecuteHmac();
-                ExecuteHmac.setKeyJson(actionJson.path("Key"));
-                ExecuteHmac.setKeyKind(actionJson.path("KeyKind").asInt());
-                ExecuteHmac.setMsgJson(actionJson.path("Msg"));
-                ExecuteHmac.setMsgKind(actionJson.path("MsgKind").asInt());
-                ExecuteHmac.setAlgoJson(actionJson.path("Algo"));
-                ExecuteHmac.setAlgoKind(actionJson.path("AlgoKind").asInt());
-                ExecuteHmac.setResultJson(actionJson.path("Result"));
-                ExecuteHmac.setResultKind(actionJson.path("ResultKind").asInt());
+                executeHmacObj.setKeyJson(actionJson.path("Key"));
+                executeHmacObj.setKeyKind(actionJson.path("KeyKind").asInt());
+                executeHmacObj.setMsgJson(actionJson.path("Msg"));
+                executeHmacObj.setMsgKind(actionJson.path("MsgKind").asInt());
+                executeHmacObj.setAlgoJson(actionJson.path("Algo"));
+                executeHmacObj.setAlgoKind(actionJson.path("AlgoKind").asInt());
+                executeHmacObj.setResultJson(actionJson.path("Result"));
+                executeHmacObj.setResultKind(actionJson.path("ResultKind").asInt());
                 executeObj = executeHmacObj;
                 break;
             }
@@ -142,7 +142,7 @@ class ActionFactory {
         return executeObj;
     }
 
-    public ActionBas getAction(int actionType){
+    public ActionBase getAction(int actionType){
         ActionBase actionObj = actionHash.get(actionType);
         int actionID;
         if(actionObj == null){

@@ -69,7 +69,7 @@ class ExecuteHmac extends ExecuteBase {
         }
     }
 
-    int getStringFromJson(JsonNode inputJson, int kind, JsonNode reqJson, JsonNode actionJson, LinkedHashMap distJson, LinkedHashMap ansJson){
+    String getStringFromJson(JsonNode inputJson, int kind, JsonNode reqJson, JsonNode actionJson, LinkedHashMap distJson, LinkedHashMap ansJson){
         String retString = null;
         JsonNode opeJson;
         ObjectMapper objectmapper = new ObjectMapper();
@@ -86,9 +86,9 @@ class ExecuteHmac extends ExecuteBase {
                 opeJson = opeJson.path(inputJson.get(count).asText());
             }
             if(opeJson.isInt()){
-                return opeJson.asInt();
+                return Integer.toString(opeJson.asInt());
             } else if(opeJson.isTextual()){
-                return Integer.parseInt((String)opeJson.asText());
+                return opeJson.asText();
             }
         } else if(kind == DISTRIBUTION || kind == ANSWER){
             if(kind == DISTRIBUTION){
@@ -100,7 +100,7 @@ class ExecuteHmac extends ExecuteBase {
                 opetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText());
             }
             if(opetree.getClass().getSimpleName().equals("Integer")){
-                return Integer.toString(opetree);
+                return Integer.toString((Integer)opetree);
             } else if(opetree.getClass().getSimpleName().equals("String")){
                 return (String)opetree;
             } else if(opetree.getClass().getSimpleName().equals("LinkedHashMap")){
@@ -111,7 +111,7 @@ class ExecuteHmac extends ExecuteBase {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
   public String hmacDigest(String msg, String keyString, String algo) {
