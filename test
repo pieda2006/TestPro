@@ -105,12 +105,12 @@ insert into ACTION_TABLE values(19,
         {
             "OperationType":4,
             "ParamName":[
-                "APN"
+                "IMSI"
             ],
             "ParamKind":0,
             "ParamValue":[
                 "RequestInfo",
-                "APN"
+                "IMSI"
             ],
             "ParamType":1,
             "ValueKind":2
@@ -145,7 +145,8 @@ insert into SERVICE_PLAN values('/spgw',
     "TrueAction":[
         {
             "ActionType":20,
-            "TableName":"CREATE_TEID_TABLE"
+            "TableName":"CREATE_TEID_TABLE",
+            "Key":"IMSI"
         }
     ],
     "FalseAction":null,
@@ -167,20 +168,19 @@ insert into ACTION_TABLE values(20,
     ],
     "TableKind":1,
     "Key":[
-        "IMSI",
+        "Key"
     ],
     "KeyType":1
     "KeyKind":1
     "Data":[
-        "ParamName",
-        "ParamName"
+        "ResponsInfo",
+        "IPaddress"
     ],
-    "DataKind":1
+    "DataKind":3
     "Value":[
-        "ParamName",
-        "ParamName"
+        "IMSI"
     ],
-    "ValueKind":1
+    "ValueKind":0
 }
 
 
