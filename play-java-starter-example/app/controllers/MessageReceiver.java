@@ -17,7 +17,7 @@ public class MessageReceiver extends Controller {
 
     public Result receiveEvent(){
 
-//long t1 = System.currentTimeMillis ();
+long t1 = System.currentTimeMillis ();
 
         /*** Get request Json message ***/
 
@@ -30,11 +30,13 @@ public class MessageReceiver extends Controller {
         ServiceControl svcObj = ServiceControl.getInstance();
         JsonNode outputJsonNode = svcObj.decideAction(uri, inputJsonNode);
 
-//long t2 = System.currentTimeMillis ();
+long t2 = System.currentTimeMillis ();
 
-//System.out.println("\n---------------\n");
-//System.out.println("TAT=" + (t2 - t1));
-//System.out.println("\n---------------\n");
+System.out.println("");
+System.out.println("---- TAT ----");
+System.out.println("URL = " + uri +  " Responce TAT=" + (t2 - t1));
+System.out.println("-------------");
+System.out.println("");
 
         return ok(outputJsonNode.toString());
     }

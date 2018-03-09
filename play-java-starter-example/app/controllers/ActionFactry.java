@@ -22,6 +22,7 @@ class ActionFactory {
         }
         return myinstance;
     }
+/*
     public void createAllAction(){
         DataManager datamanage = DataManager.getInstance();
         ResultSet result = datamanage.getData(actionTableName);
@@ -45,9 +46,9 @@ class ActionFactory {
             //Error Action
         }
     }
-    
+*/
     public ExecuteBase createOperation(JsonNode actionJson){
-        
+
         JsonNode operationJson = null;
         ExecuteBase executeObj = null;
         int operationType = actionJson.path("OperationType").asInt();
@@ -92,6 +93,14 @@ class ActionFactory {
                 executeMessageObj.setResult(actionJson.path("Result"));
                 executeMessageObj.setValueKind(actionJson.path("ValueKind").asInt());
                 executeMessageObj.setDataKind(actionJson.path("DataKind").asInt());
+                executeMessageObj.setHeader(actionJson.path("Header"));
+                executeMessageObj.setHeaderKind(actionJson.path("HeaderKind").asInt());
+                executeMessageObj.setHeadValue(actionJson.path("HeadValue"));
+                executeMessageObj.setHeadValueKind(actionJson.path("HeadValueKind").asInt());
+                executeMessageObj.setUser(actionJson.path("User"));
+                executeMessageObj.setUserKind(actionJson.path("UserKind").asInt());
+                executeMessageObj.setPass(actionJson.path("Pass"));
+                executeMessageObj.setPassKind(actionJson.path("PassKind").asInt());
                 executeObj = executeMessageObj;
                 break;
             }
@@ -156,6 +165,7 @@ class ActionFactory {
 
     public ActionBase getAction(int actionType){
         ActionBase actionObj = actionHash.get(actionType);
+
         int actionID;
         if(actionObj == null){
             DataManager datamanage = DataManager.getInstance();
@@ -171,10 +181,31 @@ class ActionFactory {
                     executeObj = createOperation(actionJson.get(count));
                     action.setOperation(executeObj);
                 }
+
+               JsonNode operationjson = null;
+               Map.Entry<String,JsonNode> jsonmap = null;
+               TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
+               Iterator<Map.Entry<String,JsonNode>> jsonIte = actionJson.fields();
+
+               while(jsonIte.hasNext()){
+                   jsonmap = jsonIte.next();
+                   if(!jsonmap.getKey().equals("Operation")){
+                       if(jsonmap.getValue().isInt()){
+                           jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
+                       } else if(jsonmap.getValue().isTextual()){
+                           jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
+                       }
+                   }
+               }
+               JsonNode condiitonjson = null;
+               operationjson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
+
                 actionID = result.getInt(ACTION_ID);
                 actionHash.put(actionID, action);
                 actionObj = action;
                 actionObj.setActionType(actionID);
+                actionObj.setOperationJson(operationjson);
+
             } catch (Exception e) {
                 //Error Action
             }

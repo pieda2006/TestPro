@@ -12,6 +12,7 @@ class ConditionBase {
     private JsonNode conditionJson = null;
     private EvaluateBase evaluateObj = null;
     private int conditionType;
+    private JsonNode operationJson = null;
 
     /*** Constructer ***/
 
@@ -23,6 +24,7 @@ class ConditionBase {
         trueAction = new ArrayList<ActionBase>();
         falseAction = new ArrayList<ActionBase>();
         setEvaluateObj(copyObj.getEvaluateObj());
+        setOperationJson(copyObj.getOperationJson());
     }
     public int getConditionType(){
         return conditionType;
@@ -54,10 +56,20 @@ class ConditionBase {
     public void setConditionJson(JsonNode input){
         conditionJson = input;
     }
+
+    public void setOperationJson(JsonNode input){
+        operationJson = input;
+    }
+
+    public JsonNode getOperationJson(){
+        return operationJson;
+    }
+
     public ConditionBase evaluateCondition(JsonNode reqJson, ArrayList<ActionBase> actionList){
 
         ResultInfo resultinf = null;
-        resultinf = evaluateObj.evaluateCondition(reqJson, conditionJson);
+
+        resultinf = evaluateObj.evaluateCondition(reqJson, conditionJson, operationJson);
         if(resultinf.getBoolResult() == true){
             actionList.addAll(trueAction);
             return trueNextCondition;
@@ -66,5 +78,5 @@ class ConditionBase {
             return falseNextCondition;
         }
     }
-    
+
 }

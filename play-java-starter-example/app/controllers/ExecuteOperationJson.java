@@ -14,81 +14,14 @@ class ExecuteOperationJson extends ExecuteBase {
     public final static int TYPESTRING = 1;
     public final static int TYPENULL = 2;
     public final static int TYPEOBJECT = 3;
-    public final static int REQUEST = 0;
-    public final static int ACTION = 1;
-    public final static int DISTRIBUTION = 2;
-    public final static int ANSWER = 3;
-    
+
     public ExecuteOperationJson(){
     }
 
-    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
+    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson, JsonNode operationJson) {
 
-        JsonNode opeJson = null;
-        JsonNode setJson = null;
-        Object opeTree = null;
-        Object setTree = null;
-        Object setnextTree = null;
-        Object registObj = null;
-        int opecount = 0;
-        int setcount = 0;
-        ObjectMapper objectmap = new ObjectMapper();
-
-        /*** Get Json Data ***/
-        if(nameKind == REQUEST || nameKind == ACTION){
-            if(nameKind == REQUEST){
-                opeJson = reqJson;
-            } else {
-                opeJson = actionJson;
-            }
-            for(opecount = 0; paramName.has(opecount); opecount++){
-                opeJson = opeJson.path(paramName.get(opecount).asText());
-            }
-            if(opeJson.isInt()){
-                registObj = opeJson.asInt();
-            } else if(opeJson.isTextual()){
-                registObj = opeJson.asText();
-            } else if(opeJson.isObject()){
-            	try {
-                    registObj = objectmap.readValue(opeJson.toString(), LinkedHashMap.class);
-                } catch (Exception e) {
-                    //Error Action
-                }
-            }
-        } else if(nameKind == DISTRIBUTION || nameKind == ANSWER){ /*** Get Tree Data ***/
-            if(nameKind == DISTRIBUTION){
-            	opeTree = distJson;
-            } else {
-                opeTree = ansJson;
-            }
-            for(opecount = 0; paramName.has(opecount); opecount++){
-                opeTree = ((LinkedHashMap)opeTree).get(paramName.get(opecount).asText());
-            }
-            registObj = opeTree;
-        }
-
-        /*** Set Data ***/
-        if(valueKind == DISTRIBUTION){
-            setTree = distJson;
-        } else {
-            setTree = ansJson;
-        }
-
-        for(setcount = 0; paramValue.has(setcount); setcount++){
-            if(setcount != 0){
-                if(setnextTree == null){
-                    setnextTree = new LinkedHashMap();
-                    ((LinkedHashMap)setTree).put(paramValue.get(setcount-1).asText(), setnextTree);
-                }
-                setTree = setnextTree;
-            }
-            setnextTree = ((LinkedHashMap)setTree).get(paramValue.get(setcount).asText());
-        }
-        if(setnextTree == null){
-            ((LinkedHashMap)setTree).put(paramValue.get(setcount-1).asText(), registObj);
-        } else {
-            ((LinkedHashMap)setTree).replace(paramValue.get(setcount-1).asText(), registObj);
-        }
+        Object dataObject = getObjectFromJson(paramName, nameKind, reqJson, actionJson, distJson, ansJson, operationJson);
+        setResultObject(dataObject, valueKind, paramValue, distJson, ansJson);
     }
 
     /*** getter setter ***/

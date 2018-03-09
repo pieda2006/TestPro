@@ -26,7 +26,7 @@ class ServicePlanFactory {
         }
         return myinstance;
     }
-    
+
     public ConditionBase getCondition(String uri){
         int conditionID;
         ConditionBase conditionObj = planHash.get(uri);
@@ -49,7 +49,7 @@ class ServicePlanFactory {
         }
         return conditionObj;
     }
-    
+
     public void createAllServicePlan(){
         DataManager datamanage = DataManager.getInstance();
         ResultSet result = datamanage.getData(servicePlanTableName);
@@ -68,9 +68,9 @@ class ServicePlanFactory {
             //Error Action
         }
     }
-    
+
     public ConditionBase createCondition(JsonNode planJson){
-        
+
         ConditionFactory conditionfact = ConditionFactory.getInstance();
         ActionFactory actionfact = ActionFactory.getInstance();
         int conditionType = planJson.path("ConditionType").asInt();
@@ -79,7 +79,7 @@ class ServicePlanFactory {
         Map.Entry<String,JsonNode> jsonmap = null;
         TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
         Iterator<Map.Entry<String,JsonNode>> jsonIte = planJson.fields();
-        
+
         while(jsonIte.hasNext()){
             jsonmap = jsonIte.next();
             if(!jsonmap.getKey().equals("TrueAction") && !jsonmap.getKey().equals("FalseAction") && 

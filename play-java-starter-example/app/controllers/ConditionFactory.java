@@ -12,7 +12,7 @@ public class ConditionFactory {
     private static final int CONDITION_ID = 1;
     private static final int CONDITION_JSON = 2;
     HashMap<Integer,ConditionBase> conditionHash = null;
- 
+
     public ConditionFactory(){
         conditionHash = new HashMap<Integer,ConditionBase>();
     }
@@ -23,7 +23,7 @@ public class ConditionFactory {
         }
         return myinstance;
     }
-    
+/*
     public void createAllCondition(){
         DataManager datamanage = DataManager.getInstance();
         ResultSet result = datamanage.getData(conditionTableName);
@@ -44,22 +44,23 @@ public class ConditionFactory {
             //Error Action
         }
     }
+*/
     public EvaluateBase createOperation(JsonNode conditionJson){
-
         JsonNode operationJson = null;
         EvaluateBase evaluateObj = null;
 
         int operationType = conditionJson.path("OperationType").asInt();
 
         switch (operationType){
-            case 0: 
-            case 1: 
+            case 0:
+            case 1:
             { /*** Equals / Compare ***/
                 EvaluateCompare evaluateCompareObj = new EvaluateCompare();
                 operationJson = conditionJson.path("Operation");
                 evaluateCompareObj.setEvaluateObj(createOperation(operationJson.get(0)));
                 evaluateCompareObj.setEvaluateObj(createOperation(operationJson.get(1)));
                 evaluateObj = evaluateCompareObj;
+
                 break;
             }
             case 2:
@@ -74,17 +75,21 @@ public class ConditionFactory {
             }
             case 4:
             case 5:
+            case 6:
             { /*** Get Element/ Input ***/
+
                 EvaluateElement evaluateElementObj = new EvaluateElement();
                 evaluateElementObj.setParamName(conditionJson.path("ParamName"));
                 evaluateElementObj.setParamType(conditionJson.path("ParamType").asInt());
                 evaluateObj = evaluateElementObj;
+
                 break;
             }
         }
-        
+
         evaluateObj.setOperationType(operationType);
         return evaluateObj;
+
     }
     public ConditionBase getCondition(int conditionType){
         int conditionID;
@@ -96,14 +101,36 @@ public class ConditionFactory {
             ResultSet result = datamanage.getData(conditionTableName,KeyParamName,conditionType);
             try {
                 result.next();
+
                 conditionJson = objmapper.readTree(result.getString(CONDITION_JSON));
                 ConditionBase condition = new ConditionBase();
                 EvaluateBase evaluateObj = null;
+
                 evaluateObj = createOperation(conditionJson);
+
+               JsonNode operationjson = null;
+               Map.Entry<String,JsonNode> jsonmap = null;
+               TreeMap<String,Object> jsonentry = new TreeMap<String,Object>();
+               Iterator<Map.Entry<String,JsonNode>> jsonIte = conditionJson.fields();
+
+               while(jsonIte.hasNext()){
+                   jsonmap = jsonIte.next();
+
+                   if(!jsonmap.getKey().equals("Operation")){
+                       if(jsonmap.getValue().isInt()){
+                           jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asInt());
+                       } else if(jsonmap.getValue().isTextual()){
+                           jsonentry.put(jsonmap.getKey(),jsonmap.getValue().asText());
+                       }
+                   }
+               }
+               operationjson = objmapper.readTree(objmapper.writeValueAsString(jsonentry));
                 condition.setEvaluateObj(evaluateObj);
                 conditionID = result.getInt(CONDITION_ID);
                 conditionHash.put(conditionID, condition);
                 conditionObj = condition;
+                conditionObj.setConditionType(conditionID);
+                conditionObj.setOperationJson(operationjson);
             } catch (Exception e) {
                 //Error Action
             }
@@ -111,5 +138,5 @@ public class ConditionFactory {
         ConditionBase retCondition = new ConditionBase(conditionObj);
         return retCondition;
     }
-    
+
 }

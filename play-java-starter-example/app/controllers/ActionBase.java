@@ -1,12 +1,14 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 class ActionBase {
 
     private ArrayList<ExecuteBase> executeArray = null;
     private JsonNode actionJson = null;
+    private JsonNode operationJson = null;
     int actionType;
 
     /*** Constructer ***/
@@ -18,6 +20,7 @@ class ActionBase {
         ArrayList<ExecuteBase> executeObj = copyObj.getExecuteObj();
         setActionType(copyObj.getActionType());
         setExecuteObj(executeObj);
+        setOperationJson(copyObj.getOperationJson());
     }
     public ArrayList<ExecuteBase> getExecuteObj(){
         return executeArray;
@@ -37,9 +40,32 @@ class ActionBase {
     public void setOperation(ExecuteBase operation){
         executeArray.add(operation);
     }
+
+    public void setOperationJson(JsonNode inputJson){
+        operationJson = inputJson;
+    }
+
+    public JsonNode getOperationJson(){
+        return operationJson;
+    }
+
     void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson){
         for(int count = 0; count < executeArray.size(); count++){
-            executeArray.get(count).executeAction(reqJson, ansJson, distJson, actionJson);
+
+System.out.println("");
+System.out.println("----- Action : Input Data -----");
+System.out.println("reqJson = " + reqJson.toString());
+System.out.println("actionJson = " + actionJson.toString());
+System.out.println("operationJson = " + operationJson.toString());
+try{
+ObjectMapper map = new ObjectMapper();
+System.out.println("ansJson = " + map.writeValueAsString(ansJson));
+System.out.println("distJson = " + map.writeValueAsString(distJson));
+} catch(Exception e){}
+System.out.println("-------------------------------");
+System.out.println("");
+
+            executeArray.get(count).executeAction(reqJson, ansJson, distJson, actionJson, operationJson);
         }
     }
 }

@@ -1,6 +1,5 @@
 package controllers;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,17 +22,22 @@ class ExecuteSendMessage extends ExecuteBase {
     private int method;
     private JsonNode value;
     private JsonNode result;
+    private JsonNode header;
+    private JsonNode headvalue;
+    private JsonNode user;
+    private JsonNode pass;
     private int valueKind;
     private int dataKind;
+    private int headerkind;
+    private int headvaluekind;
+    private int userKind;
+    private int passKind;
+
 
     public final static int TYPEINT = 0;
     public final static int TYPESTRING = 1;
     public final static int TYPENULL = 2;
     public final static int TYPEOBJECT = 3;
-    public final static int REQUEST = 0;
-    public final static int ACTION = 1;
-    public final static int DISTRIBUTION = 2;
-    public final static int ANSWER = 3;
 
     public final static int GET = 0;
     public final static int HEAD = 1;
@@ -48,7 +52,8 @@ class ExecuteSendMessage extends ExecuteBase {
 
     public ExecuteSendMessage() {
     }
-    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
+    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson, JsonNode operationJson) {
+
         // Set up Akka
         String name = "wsclient";
         ActorSystem system = ActorSystem.create(name);
@@ -69,55 +74,112 @@ class ExecuteSendMessage extends ExecuteBase {
 
         String uri = null;
         String sendValue = null;
+        String headerString = null;
+        String hValueString = null;
+        String userValue = null;
+        String passValue = null;
 
         /*** Get Json Data ***/
-        uri = getStringData(sendUri, reqJson, ansJson, distJson, actionJson, uriKind);
-        sendValue = getStringData(value, reqJson, ansJson, distJson, actionJson, valueKind);
+        uri = getStringFromJson(sendUri, uriKind, reqJson, actionJson, distJson, ansJson, operationJson);
+        if(!value.toString().equals("")){
+            sendValue = getStringFromJson(value, valueKind, reqJson, actionJson, distJson, ansJson, operationJson);
+        } else {
+           sendValue = "";
+        }
 
-        // implements WSBodyReadables or use WSBodyReadables.instance.json()
+        headerString = getStringFromJson(header, headerkind, reqJson, actionJson, distJson, ansJson, operationJson);
+        hValueString = getStringFromJson(headvalue, headvaluekind, reqJson, actionJson, distJson, ansJson, operationJson);
+        userValue = getStringFromJson(user, userKind, reqJson, actionJson, distJson, ansJson, operationJson);
+        passValue = getStringFromJson(pass, passKind, reqJson, actionJson, distJson, ansJson, operationJson);
+
         if(method == POST){
 
-//long t1 = System.currentTimeMillis ();
+            WSRequest request = ws.url(uri);
 
-            CompletionStage<JsonNode> jsonPromise = ws.url(uri).addHeader("Content-Type", "application/json")
-            .setRequestTimeout(1000).post(sendValue).thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
+           if(!header.toString().equals("")){
+               request = request.addHeader(headerString, hValueString);
+           }
+
+           if(!user.toString().equals("")){
+               request = request.setAuth(userValue, passValue);
+           }
+
+            CompletionStage<JsonNode> jsonPromise = request
+            .addHeader("Content-Type", "application/json")
+            .setRequestTimeout(10000).post(sendValue).thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
-                setResultJson((JsonNode)compjson.get(), result, ansJson, distJson, dataKind);
+                ObjectMapper objectmapper = new ObjectMapper();
+                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
             }
-
-//long t2 = System.currentTimeMillis ();
-
-//System.out.println("\n---------------\n");
-//System.out.println("Signal TAT=" + (t2 - t1));
-//System.out.println("\n---------------\n");
-
         } else if(method == GET){
-            CompletionStage<JsonNode> jsonPromise = ws.url(uri).addHeader("Content-Type", "application/json")
+
+            WSRequest request = ws.url(uri);
+
+           if(!header.toString().equals("")){
+              request = request.addHeader(headerString, hValueString);
+           }
+
+           if(!user.toString().equals("")){
+               request = request.setAuth(userValue, passValue);
+           }
+
+            CompletionStage<JsonNode> jsonPromise = request
+            .addHeader("Content-Type", "application/json")
             .setRequestTimeout(1000).get().thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
-                setResultJson((JsonNode)compjson.get(), result, ansJson, distJson, dataKind);
+                ObjectMapper objectmapper = new ObjectMapper();
+                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
             }
         } else if(method == PUT){
-            CompletionStage<JsonNode> jsonPromise = ws.url(uri).addHeader("Content-Type", "application/json")
+
+            WSRequest request = ws.url(uri);
+
+           if(!header.toString().equals("")){
+              request = request.addHeader(headerString, hValueString);
+           }
+
+           if(!user.toString().equals("")){
+               request = request.setAuth(userValue, passValue);
+           }
+
+            CompletionStage<JsonNode> jsonPromise = request
+            .addHeader("Content-Type", "application/json")
             .setRequestTimeout(1000).put(sendValue).thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
-                setResultJson((JsonNode)compjson.get(), result, ansJson, distJson, dataKind);
+                ObjectMapper objectmapper = new ObjectMapper();
+                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
             }
         } else if(method == DELETE){
-            CompletionStage<JsonNode> jsonPromise = ws.url(uri).addHeader("Content-Type", "application/json")
+
+            WSRequest request = ws.url(uri);
+
+           if(!header.toString().equals("")){
+              request = request.addHeader(headerString, hValueString);
+           }
+
+           if(!user.toString().equals("")){
+               request = request.setAuth(userValue, passValue);
+           }
+
+            CompletionStage<JsonNode> jsonPromise = request.addHeader("Content-Type", "application/json")
             .setRequestTimeout(1000).delete().thenApply(r -> r.getBody(WSBodyReadables.instance.json()));
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
-                setResultJson((JsonNode)compjson.get(), result, ansJson, distJson, dataKind);
+                ObjectMapper objectmapper = new ObjectMapper();
+                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
             }
@@ -127,7 +189,8 @@ class ExecuteSendMessage extends ExecuteBase {
                 ObjectMapper objectmapper = new ObjectMapper();
                 JsonNode jsondata = objectmapper.readTree(sendValue);
                 JsonNode jsonRes = servicectl.decideAction(uri, jsondata);
-                setResultJson(jsonRes, result, ansJson, distJson, dataKind);
+                Object resultObj = objectmapper.readValue(jsonRes.toString(), LinkedHashMap.class);
+                setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch (Exception e) {
                 //Error Action
             }
@@ -137,89 +200,6 @@ class ExecuteSendMessage extends ExecuteBase {
         } catch (Exception e){
             //Error Action
         }
-    }
-    void setResultJson(JsonNode resultJson, JsonNode inputJson, LinkedHashMap ansJson, LinkedHashMap distJson, int setKind){
-        String retString = null;
-        JsonNode opeJson = null;
-        Object opetree = null;
-        Object nextopetree = null;
-        ObjectMapper objectmapper = new ObjectMapper();
-
-        LinkedHashMap resultTree = null;
-
-        try {
-            resultTree = objectmapper.readValue(resultJson.toString(), LinkedHashMap.class);
-        } catch (Exception e) {
-            //Error Action
-        }
-        if(setKind == DISTRIBUTION){
-            opetree = distJson;
-        } else {
-            opetree = ansJson;
-        }
-        int count = 0;
-        for(count = 0; inputJson.has(count); count++){
-            if(count != 0){
-                if(nextopetree == null){
-                    nextopetree = new LinkedHashMap();
-                    ((LinkedHashMap)opetree).put(inputJson.get(count-1).asText(), nextopetree);
-                }
-                opetree = nextopetree;
-            }
-            nextopetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText());
-        }
-        if(nextopetree == null){
-            ((LinkedHashMap)opetree).put(inputJson.get(count-1).asText(), resultTree);
-        } else {
-            ((LinkedHashMap)opetree).replace(inputJson.get(count-1).asText(), resultTree);
-        }
-    }
-    public String getStringData(JsonNode jsondata, JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson, int getKind){
-        JsonNode opeJson = null;
-        Object opetree = null;
-        ObjectMapper objectmapper = new ObjectMapper();
-
-        /*** Get Json Data ***/
-        if(getKind == REQUEST || getKind == ACTION){
-            if(getKind == REQUEST){
-                opeJson = reqJson;
-            } else {
-                opeJson = actionJson;
-            }
-            for(int opecount = 0; jsondata.has(opecount); opecount++){
-                opeJson = opeJson.path(jsondata.get(opecount).asText());
-            }
-            if(opeJson.isInt()){
-                return Integer.toString(opeJson.asInt());
-            } else if(opeJson.isTextual()){
-                return opeJson.asText();
-            } else if(opeJson.isObject()){
-                return opeJson.toString();
-            }
-        } 
-        /*** Get Tree Data ***/
-        else if(getKind == DISTRIBUTION || getKind == ANSWER){
-            if(getKind == DISTRIBUTION){
-                opetree = distJson;
-            } else {
-                opetree = ansJson;
-            }
-            for(int opecount = 0; jsondata.has(opecount); opecount++){
-               opetree = ((LinkedHashMap)opetree).get(jsondata.get(opecount).asText());
-            }
-            if(opetree.getClass().getSimpleName().equals("String")){
-                return (String)opetree;
-            } else if(opetree.getClass().getSimpleName().equals("Integer")){
-                return Integer.toString((Integer)opetree);
-            } else if(opetree.getClass().getSimpleName().equals("LinkedHashMap")){
-                try {
-                    return objectmapper.writeValueAsString(opetree);
-                } catch (Exception e) {
-                    //Error Action
-                }
-            }
-        }
-        return null;
     }
     /*** getter setter ***/
     void setSendUri(JsonNode uri){
@@ -242,5 +222,29 @@ class ExecuteSendMessage extends ExecuteBase {
     }
     void setDataKind(int kind){
         dataKind = kind;
+    }
+    void setHeader(JsonNode headerJson){
+        header = headerJson;
+    }
+    void setHeaderKind(int kind){
+        headerkind = kind;
+    }
+    void setHeadValue(JsonNode headValueJson){
+        headvalue = headValueJson;
+    }
+    void setHeadValueKind(int kind){
+        headvaluekind = kind;
+    }
+    void setUser(JsonNode userJson){
+        user = userJson;
+    }
+    void setUserKind(int kind){
+        userKind = kind;
+    }
+    void setPass(JsonNode passJson){
+        pass = passJson;
+    }
+    void setPassKind(int kind){
+        passKind = kind;
     }
 }

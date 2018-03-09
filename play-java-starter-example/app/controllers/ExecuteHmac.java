@@ -21,97 +21,20 @@ class ExecuteHmac extends ExecuteBase {
     private JsonNode result;
     private int resultKind;
 
-
-    public final static int REQUEST = 0;
-    public final static int ACTION = 1;
-    public final static int DISTRIBUTION = 2;
-    public final static int ANSWER = 3;
-
     public ExecuteHmac(){
     }
 
-    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson) {
+    void executeAction(JsonNode reqJson, LinkedHashMap ansJson, LinkedHashMap distJson, JsonNode actionJson, JsonNode operationJson) {
 
         Random rand = new Random();
 
-        String keyInfo = getStringFromJson(keyJson, keyKind, reqJson, actionJson, distJson, ansJson);
-        String msgInfo = getStringFromJson(msgJson, msgKind, reqJson, actionJson, distJson, ansJson);
-        String algoInfo = getStringFromJson(algo, algoKind, reqJson, actionJson, distJson, ansJson);
+        String keyInfo = getStringFromJson(keyJson, keyKind, reqJson, actionJson, distJson, ansJson, operationJson);
+        String msgInfo = getStringFromJson(msgJson, msgKind, reqJson, actionJson, distJson, ansJson, operationJson);
+        String algoInfo = getStringFromJson(algo, algoKind, reqJson, actionJson, distJson, ansJson, operationJson);
 
         String digestInfo = hmacDigest(msgInfo, keyInfo, algoInfo);
 
-        /*** Set Data ***/
-
-        int setcount = 0;
-        Object setTree = null;
-        Object setnextTree = null;
-
-        if(resultKind == DISTRIBUTION){
-            setTree = distJson;
-        } else {
-            setTree = ansJson;
-        }
-
-        for(setcount = 0; result.has(setcount); setcount++){
-            if(setcount != 0){
-                if(setnextTree == null){
-                    setnextTree = new LinkedHashMap();
-                    ((LinkedHashMap)setTree).put(result.get(setcount-1).asText(), setnextTree);
-                }
-                setTree = setnextTree;
-            }
-            setnextTree = ((LinkedHashMap)setTree).get(result.get(setcount).asText());
-        }
-        if(setnextTree == null){
-            ((LinkedHashMap)setTree).put(result.get(setcount-1).asText(), digestInfo);
-        } else {
-            ((LinkedHashMap)setTree).replace(result.get(setcount-1).asText(), digestInfo);
-        }
-    }
-
-    String getStringFromJson(JsonNode inputJson, int kind, JsonNode reqJson, JsonNode actionJson, LinkedHashMap distJson, LinkedHashMap ansJson){
-        String retString = null;
-        JsonNode opeJson;
-        ObjectMapper objectmapper = new ObjectMapper();
-        int retint;
-        Object opetree = null;
-        
-        if(kind == REQUEST || kind == ACTION){
-            if(kind == REQUEST){
-                opeJson = reqJson;
-            } else {
-                opeJson = actionJson;
-            }
-            for(int count = 0; inputJson.has(count); count++){
-                opeJson = opeJson.path(inputJson.get(count).asText());
-            }
-            if(opeJson.isInt()){
-                return Integer.toString(opeJson.asInt());
-            } else if(opeJson.isTextual()){
-                return opeJson.asText();
-            }
-        } else if(kind == DISTRIBUTION || kind == ANSWER){
-            if(kind == DISTRIBUTION){
-                opetree = distJson;
-            } else {
-                opetree = ansJson;
-            }
-            for(int count = 0; inputJson.has(count); count++){
-                opetree = ((LinkedHashMap)opetree).get(inputJson.get(count).asText());
-            }
-            if(opetree.getClass().getSimpleName().equals("Integer")){
-                return Integer.toString((Integer)opetree);
-            } else if(opetree.getClass().getSimpleName().equals("String")){
-                return (String)opetree;
-            } else if(opetree.getClass().getSimpleName().equals("LinkedHashMap")){
-                try {
-                    return objectmapper.writeValueAsString(opetree);
-                } catch (Exception e){
-                    //Error Action
-                }
-            }
-        }
-        return null;
+        setResultObject(digestInfo, resultKind, result, distJson, ansJson);
     }
 
   public String hmacDigest(String msg, String keyString, String algo) {

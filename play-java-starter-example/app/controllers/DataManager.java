@@ -48,12 +48,12 @@ public class DataManager {
         String sql = "select * from " + table + ";" ;
         return database.executeQuery(sql);
     }
-    public int setData(String table, String keyValue, String setData){
-        String sql = "insert into " + table + " values('" + keyValue + "', '" + setData + "');";
+    public int setData(String table, String paramName, String keyValue, String setData){
+        String sql = "insert into " + table + "(" + paramName + ", VALUE) values('" + keyValue + "', '" + setData + "');";
         return database.executeUpdate(sql);
     }
-    public int setData(String table, int keyValue, String setData){
-        String sql = "insert into " + table + " values(" + keyValue + ", '" + setData + "');";
+    public int setData(String table, String paramName, int keyValue, String setData){
+        String sql = "insert into " + table + "(" + paramName + ",VALUE) values(" + keyValue + ", '" + setData + "');";
         return database.executeUpdate(sql);
     }
     public int upData(String table, String paramName, String keyValue, String setData){
@@ -65,7 +65,7 @@ public class DataManager {
         return database.executeUpdate(sql);
     }
     public int delData(String table, String paramName, String keyValue){
-        String sql = "delete " + table + " where " + paramName + "='" + keyValue + "';";
+        String sql = "delete from" + table + " where " + paramName + "='" + keyValue + "';";
         return database.executeUpdate(sql);
     }
     public int delData(String table, String paramName, int keyValue){

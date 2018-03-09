@@ -14,7 +14,7 @@ class EvaluateBase {
     public void setOperationType(int opeType){
         operationType =opeType;
     }
-    public ResultInfo evaluateCondition(JsonNode reqJson, JsonNode inputJson){
+    public ResultInfo evaluateCondition(JsonNode reqJson, JsonNode inputJson, JsonNode operationJson){
         ResultInfo resultinfo = new ResultInfo();
         resultinfo.setBoolResult(true);
         resultinfo.setResultType(ResultInfo.BOOLTYPE);
