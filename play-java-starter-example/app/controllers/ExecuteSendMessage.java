@@ -110,7 +110,7 @@ class ExecuteSendMessage extends ExecuteBase {
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
                 ObjectMapper objectmapper = new ObjectMapper();
-                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                Object resultObj = objectmapper.readValue(compjson.get().toString(), LinkedHashMap.class);
                 setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
@@ -133,7 +133,7 @@ class ExecuteSendMessage extends ExecuteBase {
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
                 ObjectMapper objectmapper = new ObjectMapper();
-                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                Object resultObj = objectmapper.readValue(compjson.get().toString(), LinkedHashMap.class);
                 setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
@@ -156,7 +156,7 @@ class ExecuteSendMessage extends ExecuteBase {
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
                 ObjectMapper objectmapper = new ObjectMapper();
-                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                Object resultObj = objectmapper.readValue(compjson.get().toString(), LinkedHashMap.class);
                 setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action
@@ -178,7 +178,7 @@ class ExecuteSendMessage extends ExecuteBase {
             CompletableFuture<JsonNode> compjson = (CompletableFuture<JsonNode>)jsonPromise;
             try {
                 ObjectMapper objectmapper = new ObjectMapper();
-                Object resultObj = objectmapper.readValue(compjson.toString(), LinkedHashMap.class);
+                Object resultObj = objectmapper.readValue(compjson.get().toString(), LinkedHashMap.class);
                 setResultObject(resultObj, dataKind, result, distJson, ansJson);
             } catch(Exception e){
                 //Error Action

@@ -8,8 +8,8 @@ public class DataManager {
 
     private static DataManager myinstance = null;
 
-    //private String url = "jdbc:mysql://some-mysql.playnetwork/EPC";
-    private String url = "jdbc:mysql://10.43.111.9/EPC";
+    private String url = "jdbc:mysql://some-mysql.playnetwork/EPC";
+    //private String url = "jdbc:mysql://10.43.111.9/EPC";
     private String user = "root";
     private String pass = "my-secret-pw";
     private String table = "CONFIG";
