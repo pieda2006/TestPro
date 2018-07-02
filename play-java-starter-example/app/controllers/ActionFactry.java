@@ -157,6 +157,28 @@ class ActionFactory {
                 executeObj = executeStringOpeObj;
                 break;
             }
+            case 13:
+            {
+                ExecuteOperationPrint executePrintObj = new ExecuteOperationPrint();
+                executePrintObj.setParamName(actionJson.path("ParamName"));
+                executePrintObj.setParamKind(actionJson.path("ParamKind").asInt());
+                executeObj = executePrintObj;
+                break;
+            }
+            case 20: //get Redis data
+            case 21: //set Redis data
+            case 22: //del Redis data
+            {
+                ExecuteOperationRedis executeRedisObj = new ExecuteOperationRedis();
+                executeRedisObj.setKey(actionJson.path("Key"));
+                executeRedisObj.setResult(actionJson.path("Data"));
+                executeRedisObj.setValue(actionJson.path("Value"));
+                executeRedisObj.setKeyKind(actionJson.path("KeyKind").asInt());
+                executeRedisObj.setResultKind(actionJson.path("DataKind").asInt());
+                executeRedisObj.setValueKind(actionJson.path("ValueKind").asInt());
+                executeObj = executeRedisObj;
+                break;
+            }
         }
 
         executeObj.setOperationType(operationType);

@@ -34,6 +34,11 @@ public class CountController extends Controller {
      * <code>GET</code> requests with a path of <code>/count</code>
      * requests by an entry in the <code>routes</code> config file.
      */
+
+    public Result count2(String inputuri){
+        return ok(inputuri);
+    }
+
     public Result count() {
 /*
         RequestBody body = request().body();

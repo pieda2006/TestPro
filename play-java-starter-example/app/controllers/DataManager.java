@@ -65,11 +65,11 @@ public class DataManager {
         return database.executeUpdate(sql);
     }
     public int delData(String table, String paramName, String keyValue){
-        String sql = "delete from" + table + " where " + paramName + "='" + keyValue + "';";
+        String sql = "delete from " + table + " where " + paramName + "='" + keyValue + "';";
         return database.executeUpdate(sql);
     }
     public int delData(String table, String paramName, int keyValue){
-        String sql = "delete " + table + " where " + paramName + "=" + keyValue + ";";
+        String sql = "delete from " + table + " where " + paramName + "=" + keyValue + ";";
         return database.executeUpdate(sql);
     }
 }

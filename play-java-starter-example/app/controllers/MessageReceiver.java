@@ -15,7 +15,7 @@ public class MessageReceiver extends Controller {
 
     /*** Message Receive Function ***/
 
-    public Result receiveEvent(){
+    public Result receiveEvent(String inputuri){
 
 long t1 = System.currentTimeMillis ();
 

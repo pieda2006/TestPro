@@ -24,3 +24,6 @@ testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))
 libraryDependencies ++= Seq(
   ws
 )
+
+libraryDependencies ++= Seq(
+  "redis.clients" % "jedis" % "2.9.0")
