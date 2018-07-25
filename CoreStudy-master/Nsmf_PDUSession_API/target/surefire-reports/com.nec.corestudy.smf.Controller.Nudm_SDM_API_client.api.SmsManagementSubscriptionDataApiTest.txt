@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.nec.corestudy.smf.Controller.Nudm_SDM_API_client.api.SmsManagementSubscriptionDataApiTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 sec - in com.nec.corestudy.smf.Controller.Nudm_SDM_API_client.api.SmsManagementSubscriptionDataApiTest

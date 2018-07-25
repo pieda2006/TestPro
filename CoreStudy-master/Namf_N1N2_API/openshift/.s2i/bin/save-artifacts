@@ -1,0 +1,16 @@
+#!/bin/bash
+
+APP=Namf_N1N2_API
+
+pushd ${HOME} >/dev/null
+
+# ${HOME}/.m2 is the maven repo dir
+# {$HOME}/source/target is the class files from the previous build
+cd /opt/app-root/src
+if [ -d ./$APP/target ]; then
+    tar cf - ./.m2 ./$APP/target
+else
+    tar cf - ./.m2
+fi
+
+popd >/dev/null
