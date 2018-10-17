@@ -1,0 +1,73 @@
+swagger: "2.0"
+info:
+  description: "Sample Server"
+  version: "1.0.0"
+  title: "Sample Server"
+host: "172.21.59.13"
+basePath: "/v2"
+tags:
+- name: "qos"
+  description: "Change QoS"
+schemes:
+- "https"
+- "http"
+paths:
+  /qos/{imsi}:
+    post:
+      tags:
+      - "qos"
+      summary: "Change QoS"
+      description: "Change EPC Default EPS Bearer QCI/ARP and/or AMBR"
+      operationId: "change qos"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "imsi"
+        in: "path"
+        description: "IMSI"
+        required: true
+        type: "string"
+        maxLength: 15
+      - in: "body"
+        name: "QoS"
+        description: "change Qos informantion"
+        required: true
+        schema:
+          $ref: "#/definitions/body"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+definitions:
+  body:
+    type: "object"
+    properties:
+      ambrul:
+        type: "integer"
+        description: "AMBR-UL"
+      ambrdl:
+        type: "integer"
+        description: "AMBR-DL"
+      qci:
+        type: "integer"
+        description: "QCI"
+      arp:
+        type: "integer"
+        description: "ARP"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
