@@ -556,18 +556,11 @@
                     "content": {
                       "application/json": {
                         "schema": {
-                          "oneOf": [
-                            {
-                              "$ref": "#/components/schemas/UeCampingRep"
-                            },
-                            {
-                              "type": "array",
-                              "items": {
-                                "$ref": "#/components/schemas/PartialSuccessReport"
-                              },
-                              "minItems": 1
-                            }
-                          ]
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/PartialSuccessReport"
+                          },
+                          "minItems": 1
                         }
                       }
                     }
@@ -3179,20 +3172,13 @@
             "maximum": 255
           },
           "pduSessionType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "IPV4",
-                  "IPV6",
-                  "IPV4V6",
-                  "UNSTRUCTURED",
-                  "ETHERNET"
-                ]
-              },
-              {
-                "type": "string"
-              }
+            "type": "string",
+            "enum": [
+              "IPV4",
+              "IPV6",
+              "IPV4V6",
+              "UNSTRUCTURED",
+              "ETHERNET"
             ]
           },
           "chargingcharacteristics": {
@@ -3212,20 +3198,13 @@
             ]
           },
           "ratType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "NR",
-                  "EUTRA",
-                  "WLAN",
-                  "VIRTUAL",
-                  "NBIOT"
-                ]
-              },
-              {
-                "type": "string"
-              }
+            "type": "string",
+            "enum": [
+              "NR",
+              "EUTRA",
+              "WLAN",
+              "VIRTUAL",
+              "NBIOT"
             ]
           },
           "servingNetwork": {
@@ -3507,10 +3486,7 @@
                         "type": "string",
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
-                    },
-                    "required": [
-                      "plmnId"
-                    ]
+                    }
                   }
                 },
                 "required": [
@@ -3586,14 +3562,6 @@
           },
           "ipv6AddressPrefix": {
             "type": "string",
-            "allOf": [
-              {
-                "pattern": "^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))(\\/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))$"
-              },
-              {
-                "pattern": "^((([^:]+:){7}([^:]+))|((([^:]+:)*[^:]+)?::(([^:]+:)*[^:]+)?))(\\/.+)$"
-              }
-            ],
             "example": "2001:db8:abcd:12::0/64"
           },
           "ipDomain": {
@@ -3644,31 +3612,17 @@
                     "description": "nullable true shall not be used for this attribute"
                   },
                   "preemptCap": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "enum": [
-                          "NOT_PREEMPT",
-                          "MAY_PREEMPT"
-                        ]
-                      },
-                      {
-                        "type": "string"
-                      }
+                    "type": "string",
+                    "enum": [
+                      "NOT_PREEMPT",
+                      "MAY_PREEMPT"
                     ]
                   },
                   "preemptVuln": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "enum": [
-                          "NOT_PREEMPTABLE",
-                          "PREEMPTABLE"
-                        ]
-                      },
-                      {
-                        "type": "string"
-                      }
+                    "type": "string",
+                    "enum": [
+                      "NOT_PREEMPTABLE",
+                      "PREEMPTABLE"
                     ]
                   }
                 },
@@ -3714,21 +3668,14 @@
                 "pattern": "^[0-9]{3}[0-9]{2,3}-[A-Fa-f0-9]{6}$"
               },
               "traceDepth": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "MINIMUM",
-                      "MEDIUM",
-                      "MAXIMUM",
-                      "MINIMUM_WO_VENDOR_EXTENSION",
-                      "MEDIUM_WO_VENDOR_EXTENSION",
-                      "MAXIMUM_WO_VENDOR_EXTENSION"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
+                "type": "string",
+                "enum": [
+                  "MINIMUM",
+                  "MEDIUM",
+                  "MAXIMUM",
+                  "MINIMUM_WO_VENDOR_EXTENSION",
+                  "MEDIUM_WO_VENDOR_EXTENSION",
+                  "MAXIMUM_WO_VENDOR_EXTENSION"
                 ]
               },
               "neTypeList": {
@@ -3927,19 +3874,12 @@
                   "type": "string"
                 },
                 "presenceState": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "enum": [
-                        "IN_AREA",
-                        "OUT_OF_AREA",
-                        "UNKNOWN",
-                        "INACTIVE"
-                      ]
-                    },
-                    {
-                      "type": "string"
-                    }
+                  "type": "string",
+                  "enum": [
+                    "IN_AREA",
+                    "OUT_OF_AREA",
+                    "UNKNOWN",
+                    "INACTIVE"
                   ]
                 },
                 "trackingAreaList": {
@@ -4093,23 +4033,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -4123,10 +4046,10 @@
             "nullable": true
           },
           "ipv4Index": {
-            "$ref": "TS29519_Policy_Data.yaml#/components/schemas/IpIndex"
+            "type": "integer"
           },
           "ipv6Index": {
-            "$ref": "TS29519_Policy_Data.yaml#/components/schemas/IpIndex"
+            "type": "integer"
           },
           "qosFlowUsage": {
             "$ref": "#/components/schemas/QosFlowUsage"
@@ -4164,7 +4087,8 @@
             "description": "A reference to the application detection filter configured at the UPF."
           },
           "contVer": {
-            "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/ContentVersion"
+            "description": "Represents the content version of some content.",
+            "type": "integer"
           },
           "pccRuleId": {
             "type": "string",
@@ -4345,31 +4269,17 @@
                 "description": "nullable true shall not be used for this attribute"
               },
               "preemptCap": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "NOT_PREEMPT",
-                      "MAY_PREEMPT"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
+                "type": "string",
+                "enum": [
+                  "NOT_PREEMPT",
+                  "MAY_PREEMPT"
                 ]
               },
               "preemptVuln": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "NOT_PREEMPTABLE",
-                      "PREEMPTABLE"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
+                "type": "string",
+                "enum": [
+                  "NOT_PREEMPTABLE",
+                  "PREEMPTABLE"
                 ]
               }
             },
@@ -4461,20 +4371,13 @@
             ]
           },
           "ratType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "NR",
-                  "EUTRA",
-                  "WLAN",
-                  "VIRTUAL",
-                  "NBIOT"
-                ]
-              },
-              {
-                "type": "string"
-              }
+            "type": "string",
+            "enum": [
+              "NR",
+              "EUTRA",
+              "WLAN",
+              "VIRTUAL",
+              "NBIOT"
             ]
           }
         },
@@ -4491,7 +4394,14 @@
             "description": "Univocally identifies the traffic control policy data within a PDU session."
           },
           "flowStatus": {
-            "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/FlowStatus"
+            "type": "string",
+            "enum": [
+              "ENABLED-UPLINK",
+              "ENABLED-DOWNLINK",
+              "ENABLED",
+              "DISABLED",
+              "REMOVED"
+            ]
           },
           "redirectInfo": {
             "type": "array",
@@ -4550,18 +4460,6 @@
               },
               "required": [
                 "dnai"
-              ],
-              "anyOf": [
-                {
-                  "required": [
-                    "routeInfo"
-                  ]
-                },
-                {
-                  "required": [
-                    "routeProfId"
-                  ]
-                }
               ],
               "nullable": true
             },
@@ -4648,13 +4546,25 @@
             "description": "Univocally identifies the usage monitoring policy data within a PDU session."
           },
           "volumeThreshold": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/VolumeRm"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes with \"nullable=true\" property.",
+            "nullable": true
           },
           "volumeThresholdUplink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/VolumeRm"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes with \"nullable=true\" property.",
+            "nullable": true
           },
           "volumeThresholdDownlink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/VolumeRm"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes with \"nullable=true\" property.",
+            "nullable": true
           },
           "timeThreshold": {
             "type": "integer",
@@ -4666,13 +4576,25 @@
             "nullable": true
           },
           "nextVolThreshold": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/VolumeRm"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes with \"nullable=true\" property.",
+            "nullable": true
           },
           "nextVolThresholdUplink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/VolumeRm"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes with \"nullable=true\" property.",
+            "nullable": true
           },
           "nextVolThresholdDownlink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/VolumeRm"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes with \"nullable=true\" property.",
+            "nullable": true
           },
           "nextTimeThreshold": {
             "type": "integer",
@@ -4720,7 +4642,46 @@
             "$ref": "#/components/schemas/FlowDescription"
           },
           "ethFlowDescription": {
-            "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/EthFlowDescription"
+            "description": "Identifies an Ethernet flow",
+            "type": "object",
+            "required": [
+              "ethType"
+            ],
+            "properties": {
+              "destMacAddr": {
+                "type": "string",
+                "pattern": "^([0-9a-fA-F]{2})((-[0-9a-fA-F]{2}){5})$"
+              },
+              "ethType": {
+                "type": "string"
+              },
+              "fDesc": {
+                "description": "Defines a packet filter of an IP flow.",
+                "type": "string"
+              },
+              "fDir": {
+                "type": "string",
+                "enum": [
+                  "DOWNLINK",
+                  "UPLINK",
+                  "BIDIRECTIONAL",
+                  "UNSPECIFIED"
+                ],
+                "description": "Possible values are - DOWNLINK: The corresponding filter applies for traffic to the UE. - UPLINK: The corresponding filter applies for traffic from the UE. - BIDIRECTIONAL: The corresponding filter applies for traffic both to and from the UE. - UNSPECIFIED: The corresponding filter applies for traffic to the UE (downlink), but has no specific direction declared. The service data flow detection shall apply the filter for uplink traffic as if the filter was bidirectional. The PCF shall not use the value UNSPECIFIED in filters created by the network in NW-initiated procedures. The PCF shall only include the value UNSPECIFIED in filters in UE-initiated procedures if the same value is received from the SMF.\n"
+              },
+              "sourceMacAddr": {
+                "type": "string",
+                "pattern": "^([0-9a-fA-F]{2})((-[0-9a-fA-F]{2}){5})$"
+              },
+              "vlanTags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 2
+              }
+            }
           },
           "packFiltId": {
             "type": "string",
@@ -4883,23 +4844,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -5036,27 +4980,7 @@
                         "type": "string",
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
-                    },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
-                    "required": [
-                      "plmnId"
-                    ]
+                    }
                   }
                 },
                 "required": [
@@ -5165,18 +5089,11 @@
             "maximum": 255
           },
           "resourceType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "NON_GBR",
-                  "NON_CRITICAL_GBR",
-                  "CRITICAL_GBR"
-                ]
-              },
-              {
-                "type": "string"
-              }
+            "type": "string",
+            "enum": [
+              "NON_GBR",
+              "NON_CRITICAL_GBR",
+              "CRITICAL_GBR"
             ]
           },
           "priorityLevel": {
@@ -5235,25 +5152,43 @@
             "description": "An id referencing UsageMonitoringData objects associated with this usage report."
           },
           "volUsage": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/Volume"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes."
           },
           "volUsageUplink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/Volume"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes."
           },
           "volUsageDownlink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/Volume"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes."
           },
           "timeUsage": {
             "type": "integer"
           },
           "nextVolUsage": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/Volume"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes."
           },
           "nextVolUsageUplink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/Volume"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes."
           },
           "nextVolUsageDownlink": {
-            "$ref": "TS29122_CommonData.yaml#/components/schemas/Volume"
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Unsigned integer identifying a volume in units of bytes."
           },
           "nextTimeUsage": {
             "type": "integer"
@@ -5290,20 +5225,13 @@
             ]
           },
           "ratType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "NR",
-                  "EUTRA",
-                  "WLAN",
-                  "VIRTUAL",
-                  "NBIOT"
-                ]
-              },
-              {
-                "type": "string"
-              }
+            "type": "string",
+            "enum": [
+              "NR",
+              "EUTRA",
+              "WLAN",
+              "VIRTUAL",
+              "NBIOT"
             ]
           },
           "servingNetwork": {
@@ -5449,23 +5377,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -5603,23 +5514,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -5699,50 +5593,18 @@
           },
           "ipv6AddressPrefix": {
             "type": "string",
-            "allOf": [
-              {
-                "pattern": "^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))(\\/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))$"
-              },
-              {
-                "pattern": "^((([^:]+:){7}([^:]+))|((([^:]+:)*[^:]+)?::(([^:]+:)*[^:]+)?))(\\/.+)$"
-              }
-            ],
             "example": "2001:db8:abcd:12::0/64"
           },
           "relIpv6AddressPrefix": {
             "type": "string",
-            "allOf": [
-              {
-                "pattern": "^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))(\\/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))$"
-              },
-              {
-                "pattern": "^((([^:]+:){7}([^:]+))|((([^:]+:)*[^:]+)?::(([^:]+:)*[^:]+)?))(\\/.+)$"
-              }
-            ],
             "example": "2001:db8:abcd:12::0/64"
           },
           "addIpv6AddrPrefixes": {
             "type": "string",
-            "allOf": [
-              {
-                "pattern": "^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))(\\/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))$"
-              },
-              {
-                "pattern": "^((([^:]+:){7}([^:]+))|((([^:]+:)*[^:]+)?::(([^:]+:)*[^:]+)?))(\\/.+)$"
-              }
-            ],
             "example": "2001:db8:abcd:12::0/64"
           },
           "addRelIpv6AddrPrefixes": {
             "type": "string",
-            "allOf": [
-              {
-                "pattern": "^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))(\\/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))$"
-              },
-              {
-                "pattern": "^((([^:]+:){7}([^:]+))|((([^:]+:)*[^:]+)?::(([^:]+:)*[^:]+)?))(\\/.+)$"
-              }
-            ],
             "example": "2001:db8:abcd:12::0/64"
           },
           "relUeMac": {
@@ -5797,31 +5659,17 @@
                     "description": "nullable true shall not be used for this attribute"
                   },
                   "preemptCap": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "enum": [
-                          "NOT_PREEMPT",
-                          "MAY_PREEMPT"
-                        ]
-                      },
-                      {
-                        "type": "string"
-                      }
+                    "type": "string",
+                    "enum": [
+                      "NOT_PREEMPT",
+                      "MAY_PREEMPT"
                     ]
                   },
                   "preemptVuln": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "enum": [
-                          "NOT_PREEMPTABLE",
-                          "PREEMPTABLE"
-                        ]
-                      },
-                      {
-                        "type": "string"
-                      }
+                    "type": "string",
+                    "enum": [
+                      "NOT_PREEMPTABLE",
+                      "PREEMPTABLE"
                     ]
                   }
                 },
@@ -5899,19 +5747,12 @@
                   "type": "string"
                 },
                 "presenceState": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "enum": [
-                        "IN_AREA",
-                        "OUT_OF_AREA",
-                        "UNKNOWN",
-                        "INACTIVE"
-                      ]
-                    },
-                    {
-                      "type": "string"
-                    }
+                  "type": "string",
+                  "enum": [
+                    "IN_AREA",
+                    "OUT_OF_AREA",
+                    "UNKNOWN",
+                    "INACTIVE"
                   ]
                 },
                 "trackingAreaList": {
@@ -6065,23 +5906,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -6118,21 +5942,14 @@
                 "pattern": "^[0-9]{3}[0-9]{2,3}-[A-Fa-f0-9]{6}$"
               },
               "traceDepth": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "MINIMUM",
-                      "MEDIUM",
-                      "MAXIMUM",
-                      "MINIMUM_WO_VENDOR_EXTENSION",
-                      "MEDIUM_WO_VENDOR_EXTENSION",
-                      "MAXIMUM_WO_VENDOR_EXTENSION"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
+                "type": "string",
+                "enum": [
+                  "MINIMUM",
+                  "MEDIUM",
+                  "MAXIMUM",
+                  "MINIMUM_WO_VENDOR_EXTENSION",
+                  "MEDIUM_WO_VENDOR_EXTENSION",
+                  "MAXIMUM_WO_VENDOR_EXTENSION"
                 ]
               },
               "neTypeList": {
@@ -6177,19 +5994,11 @@
             "description": "It is used to set the value of Notification Correlation ID in the notification sent by the SMF."
           },
           "dnaiChgType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "EARLY",
-                  "EARLY_LATE",
-                  "LATE"
-                ]
-              },
-              {
-                "type": "string",
-                "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-              }
+            "type": "string",
+            "enum": [
+              "EARLY",
+              "EARLY_LATE",
+              "LATE"
             ],
             "description": "Possible values are - EARLY: Early notification of UP path reconfiguration. - EARLY_LATE: Early and late notification of UP path reconfiguration. This value shall only be present in the subscription to the DNAI change event. - LATE: Late notification of UP path reconfiguration.\n"
           },
@@ -6211,7 +6020,13 @@
             "type": "string"
           },
           "cause": {
-            "$ref": "TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/PolicyAssociationReleaseCause"
+            "type": "string",
+            "enum": [
+              "UNSPECIFIED",
+              "UE_SUBSCRIPTION",
+              "INSUFFICIENT_RES"
+            ],
+            "description": "Possible values are - UNSPECIFIED: This value is used for unspecified reasons. - UE_SUBSCRIPTION: This value is used to indicate that the session needs to be terminated because the subscription of UE has changed (e.g. was removed). - INSUFFICIENT_RES: This value is used to indicate that the server is overloaded and needs to abort the session.\n"
           }
         },
         "required": [
@@ -6336,20 +6151,13 @@
             ]
           },
           "ratType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "NR",
-                  "EUTRA",
-                  "WLAN",
-                  "VIRTUAL",
-                  "NBIOT"
-                ]
-              },
-              {
-                "type": "string"
-              }
+            "type": "string",
+            "enum": [
+              "NR",
+              "EUTRA",
+              "WLAN",
+              "VIRTUAL",
+              "NBIOT"
             ]
           },
           "servNfId": {
@@ -6498,23 +6306,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -6652,23 +6443,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -6755,7 +6529,8 @@
           "contVers": {
             "type": "array",
             "items": {
-              "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/ContentVersion"
+              "description": "Represents the content version of some content.",
+              "type": "integer"
             },
             "minItems": 1,
             "description": "Indicates the version of a PCC rule."
@@ -6764,7 +6539,12 @@
             "$ref": "#/components/schemas/FailureCode"
           },
           "finUnitAct": {
-            "$ref": "TS32291_Nchf_ConvergedCharging.yaml#/components/schemas/FinalUnitAction"
+            "type": "string",
+            "enum": [
+              "TERMINATE",
+              "REDIRECT",
+              "RESTRICT_ACCESS"
+            ]
           },
           "ranNasRelCauses": {
             "type": "array",
@@ -6898,10 +6678,15 @@
             "description": "An array of PCC rule id references to the PCC rules associated with the QoS notification control info."
           },
           "notifType": {
-            "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/QosNotifType"
+            "type": "string",
+            "enum": [
+              "GUARANTEED",
+              "NOT_GUARANTEED"
+            ]
           },
           "contVer": {
-            "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/ContentVersion"
+            "description": "Represents the content version of some content.",
+            "type": "integer"
           }
         },
         "required": [
@@ -6958,31 +6743,17 @@
                 "description": "nullable true shall not be used for this attribute"
               },
               "preemptCap": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "NOT_PREEMPT",
-                      "MAY_PREEMPT"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
+                "type": "string",
+                "enum": [
+                  "NOT_PREEMPT",
+                  "MAY_PREEMPT"
                 ]
               },
               "preemptVuln": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "NOT_PREEMPTABLE",
-                      "PREEMPTABLE"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
+                "type": "string",
+                "enum": [
+                  "NOT_PREEMPTABLE",
+                  "PREEMPTABLE"
                 ]
               }
             },
@@ -7142,7 +6913,19 @@
             ]
           },
           "anGwAddr": {
-            "$ref": "TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/AnGwAddress"
+            "description": "describes the address of the access network gateway control node",
+            "type": "object",
+            "properties": {
+              "anGwIpv4Addr": {
+                "type": "string",
+                "pattern": "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
+                "example": "198.51.100.1"
+              },
+              "anGwIpv6Addr": {
+                "type": "string",
+                "example": "2001:db8:85a3::8a2e:370:7334"
+              }
+            }
           }
         }
       },
@@ -7195,343 +6978,210 @@
         "description": "Defines a packet filter for an IP flow.Refer to subclause 5.4.2 of 3GPP TS 29.212 [23] for encoding."
       },
       "FlowDirection": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "DOWNLINK",
-              "UPLINK",
-              "BIDIRECTIONAL",
-              "UNSPECIFIED"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "DOWNLINK",
+          "UPLINK",
+          "BIDIRECTIONAL",
+          "UNSPECIFIED"
         ],
         "description": "Possible values are - DOWNLINK: The corresponding filter applies for traffic to the UE. - UPLINK: The corresponding filter applies for traffic from the UE. - BIDIRECTIONAL: The corresponding filter applies for traffic both to and from the UE. - UNSPECIFIED: The corresponding filter applies for traffic to the UE (downlink), but has no specific direction declared. The service data flow detection shall apply the filter for uplink traffic as if the filter was bidirectional. The PCF shall not use the value UNSPECIFIED in filters created by the network in NW-initiated procedures. The PCF shall only include the value UNSPECIFIED in filters in UE-initiated procedures if the same value is received from the SMF.\n"
       },
       "FlowDirectionRm": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "DOWNLINK",
-              "UPLINK",
-              "BIDIRECTIONAL",
-              "UNSPECIFIED"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "DOWNLINK",
+          "UPLINK",
+          "BIDIRECTIONAL",
+          "UNSPECIFIED"
         ],
         "description": "Possible values are - DOWNLINK: The corresponding filter applies for traffic to the UE. - UPLINK: The corresponding filter applies for traffic from the UE. - BIDIRECTIONAL: The corresponding filter applies for traffic both to and from the UE. - UNSPECIFIED: The corresponding filter applies for traffic to the UE (downlink), but has no specific direction declared. The service data flow detection shall apply the filter for uplink traffic as if the filter was bidirectional. The PCF shall not use the value UNSPECIFIED in filters created by the network in NW-initiated procedures. The PCF shall only include the value UNSPECIFIED in filters in UE-initiated procedures if the same value is received from the SMF.\n",
         "nullable": true
       },
       "ReportingLevel": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "SER_ID_LEVEL",
-              "RAT_GR_LEVEL",
-              "SPON_CON_LEVEL"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "SER_ID_LEVEL",
+          "RAT_GR_LEVEL",
+          "SPON_CON_LEVEL"
         ],
         "description": "Possible values are - SER_ID_LEVEL: Indicates that the usage shall be reported on service id and rating group combination level. - RAT_GR_LEVEL: Indicates that the usage shall be reported on rating group level. - SPON_CON_LEVEL: Indicates that the usage shall be reported on sponsor identity and rating group combination level.\n",
         "nullable": true
       },
       "MeteringMethod": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "DURATION",
-              "VOLUME",
-              "DURATION_VOLUME",
-              "EVENT"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "DURATION",
+          "VOLUME",
+          "DURATION_VOLUME",
+          "EVENT"
         ],
         "description": "Possible values are - DURATION: Indicates that the duration of the service data flow traffic shall be metered. - VOLUME: Indicates that volume of the service data flow traffic shall be metered. - DURATION_VOLUME: Indicates that the duration and the volume of the service data flow traffic shall be metered. - EVENT: Indicates that events of the service data flow traffic shall be metered.\n",
         "nullable": true
       },
       "PolicyControlRequestTrigger": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "PLMN_CH",
-              "RES_MO_RE",
-              "AC_TY_CH",
-              "UE_IP_CH",
-              "UE_MAC_CH",
-              "AN_CH_COR",
-              "US_RE",
-              "APP_STA",
-              "APP_STO",
-              "AN_INFO",
-              "CM_SES_FAIL",
-              "PS_DA_OFF",
-              "DEF_QOS_CH",
-              "SE_AMBR_CH",
-              "QOS_NOTIF",
-              "NO_CREDIT",
-              "PRA_CH",
-              "SAREA_CH",
-              "SCNN_CH",
-              "RE_TIMEOUT",
-              "RES_RELEASE",
-              "SUCC_RES_ALLO",
-              "RAT_TY_CH",
-              "REF_QOS_IND_CH",
-              "NUM_OF_PACKET_FILTER",
-              "UE_STATUS_RESUME",
-              "UE_TZ_CH",
-              "AUTH_PROF_CH"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "PLMN_CH",
+          "RES_MO_RE",
+          "AC_TY_CH",
+          "UE_IP_CH",
+          "UE_MAC_CH",
+          "AN_CH_COR",
+          "US_RE",
+          "APP_STA",
+          "APP_STO",
+          "AN_INFO",
+          "CM_SES_FAIL",
+          "PS_DA_OFF",
+          "DEF_QOS_CH",
+          "SE_AMBR_CH",
+          "QOS_NOTIF",
+          "NO_CREDIT",
+          "PRA_CH",
+          "SAREA_CH",
+          "SCNN_CH",
+          "RE_TIMEOUT",
+          "RES_RELEASE",
+          "SUCC_RES_ALLO",
+          "RAT_TY_CH",
+          "REF_QOS_IND_CH",
+          "NUM_OF_PACKET_FILTER",
+          "UE_STATUS_RESUME",
+          "UE_TZ_CH",
+          "AUTH_PROF_CH"
         ],
         "description": "Possible values are - PLMN_CH: PLMN Change - RES_MO_RE: A request for resource modification has been received by the SMF. The SMF always reports to the PCF. - AC_TY_CH: Access Type Change - UE_IP_CH: UE IP address change. The SMF always reports to the PCF. - UE_MAC_CH: A new UE MAC address is detected or a used UE MAC address is inactive for a specific period - AN_CH_COR: Access Network Charging Correlation Information - US_RE: The PDU Session or the Monitoring key specific resources consumed by a UE either reached the threshold or needs to be reported for other reasons. - APP_STA: The start of application traffic has been detected. - APP_STO: The stop of application traffic has been detected. - AN_INFO: Access Network Information report - CM_SES_FAIL: Credit management session failure - PS_DA_OFF: The SMF reports when the 3GPP PS Data Off status changes. The SMF always reports to the PCF. - DEF_QOS_CH: Default QoS Change. The SMF always reports to the PCF. - SE_AMBR_CH: Session AMBR Change. The SMF always reports to the PCF. - QOS_NOTIF: The SMF notify the PCF when receiving notification from RAN that QoS targets of the QoS Flow cannot be guranteed or gurateed again. - NO_CREDIT: Out of credit - PRA_CH: Change of UE presence in Presence Reporting Area - SAREA_CH: Location Change with respect to the Serving Area - SCNN_CH: Location Change with respect to the Serving CN node - RE_TIMEOUT: Indicates the SMF generated the request because there has been a PCC revalidation timeout - RES_RELEASE: Indicate that the SMF can inform the PCF of the outcome of the release of resources for those rules that require so. - SUCC_RES_ALLO: Indicates that the requested rule data is the successful resource allocation. - RAT_TY_CH: RAT Type Change. - REF_QOS_IND_CH: Reflective QoS indication Change - NUM_OF_PACKET_FILTER: Indicates that the SMF shall report the number of supported packet filter for signalled QoS rules - UE_STATUS_RESUME: Indicates that the UE’s status is resumed. - UE_TZ_CH: UE Time Zone Change - AUTH_PROF_CH: The DN-AAA authorization profile index has changed\n"
       },
       "RequestedRuleDataType": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "CH_ID",
-              "MS_TIME_ZONE",
-              "USER_LOC_INFO",
-              "RES_RELEASE",
-              "SUCC_RES_ALLO"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "CH_ID",
+          "MS_TIME_ZONE",
+          "USER_LOC_INFO",
+          "RES_RELEASE",
+          "SUCC_RES_ALLO"
         ],
         "description": "Possible values are - CH_ID: Indicates that the requested rule data is the charging identifier.  - MS_TIME_ZONE: Indicates that the requested access network info type is the UE's timezone. - USER_LOC_INFO: Indicates that the requested access network info type is the UE's location. - RES_RELEASE: Indicates that the requested rule data is the result of the release of resource. - SUCC_RES_ALLO: Indicates that the requested rule data is the successful resource allocation.\n"
       },
       "RuleStatus": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "INACTIVE"
         ],
         "description": "Possible values are - ACTIVE: Indicates that the PCC rule(s) are successfully installed (for those provisioned from PCF) or activated (for those pre-defined in SMF), or the session rule(s) are successfully installed  - INACTIVE: Indicates that the PCC rule(s) are removed (for those provisioned from PCF) or inactive (for those pre-defined in SMF) or the session rule(s) are removed.\n"
       },
       "FailureCode": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "UNK_RULE_ID",
-              "RA_GR_ERR",
-              "SER_ID_ERR",
-              "NF_MAL",
-              "RES_LIM",
-              "MAX_NR_QoS_FLOW",
-              "MISS_FLOW_INFO",
-              "RES_ALLO_FAIL",
-              "UNSUCC_QOS_VAL",
-              "INCOR_FLOW_INFO",
-              "PS_TO_CS_HAN",
-              "APP_ID_ERR",
-              "NO_QOS_FLOW_BOUND",
-              "FILTER_RES",
-              "MISS_REDI_SER_ADDR",
-              "CM_END_USER_SER_DENIED",
-              "CM_CREDIT_CON_NOT_APP",
-              "CM_AUTH_REJ",
-              "CM_USER_UNK",
-              "CM_RAT_FAILED",
-              "UE_STA_SUSP"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "UNK_RULE_ID",
+          "RA_GR_ERR",
+          "SER_ID_ERR",
+          "NF_MAL",
+          "RES_LIM",
+          "MAX_NR_QoS_FLOW",
+          "MISS_FLOW_INFO",
+          "RES_ALLO_FAIL",
+          "UNSUCC_QOS_VAL",
+          "INCOR_FLOW_INFO",
+          "PS_TO_CS_HAN",
+          "APP_ID_ERR",
+          "NO_QOS_FLOW_BOUND",
+          "FILTER_RES",
+          "MISS_REDI_SER_ADDR",
+          "CM_END_USER_SER_DENIED",
+          "CM_CREDIT_CON_NOT_APP",
+          "CM_AUTH_REJ",
+          "CM_USER_UNK",
+          "CM_RAT_FAILED",
+          "UE_STA_SUSP"
         ],
         "description": "Possible values are\n  - UNK_RULE_ID: Indicates that the pre-provisioned PCC rule could not be successfully activated because the PCC rule identifier is unknown to the SMF.\n  - RA_GR_ERR: Indicate that the PCC rule could not be successfully installed or enforced because the Rating Group specified within the Charging Data policy decision which the PCC rule refers to is unknown or, invalid.\n  - SER_ID_ERR: Indicate that the PCC rule could not be successfully installed or enforced because the Service Identifier specified within the Charging Data policy decision which the PCC rule refers to is invalid, unknown, or not applicable to the service being charged.\n  - NF_MAL: Indicate that the PCC rule could not be successfully installed (for those provisioned from the PCF) or activated (for those pre-defined in SMF) or enforced (for those already successfully installed) due to SMF/UPF malfunction.\n  - RES_LIM: Indicate that the PCC rule could not be successfully installed (for those provisioned from PCF) or activated (for those pre-defined in SMF) or enforced (for those already successfully installed) due to a limitation of resources at the SMF/UPF.\n  - MAX_NR_QoS_FLOW: Indicate that the PCC rule could not be successfully installed (for those provisioned from PCF) or activated (for those pre-defined in SMF) or enforced (for those already successfully installed) due to the fact that the maximum number of QoS flows has been reached for the PDU session.\n  - MISS_FLOW_INFO: Indicate that the PCC rule could not be successfully installed or enforced because neither the \"flowInfos\" attribute nor the \"appId\" attribute is specified within the PccRule data structure by the PCF during the first install request of the PCC rule.\n  - RES_ALLO_FAIL: Indicate that the PCC rule could not be successfully installed or maintained since the QoS flow establishment/modification failed, or the QoS flow was released.\n  - UNSUCC_QOS_VAL: indicate that the QoS validation has failed or when Guaranteed Bandwidth > Max-Requested-Bandwidth.\n  - INCOR_FLOW_INFO: Indicate that the PCC rule could not be successfully installed or modified at the SMF because the provided flow information is not supported by the network (e.g. the provided IP address(es) or Ipv6 prefix(es) do not correspond to an IP version applicable for the PDU session).\n  - PS_TO_CS_HAN: Indicate that the PCC rule could not be maintained because of PS to CS handover.\n  - APP_ID_ERR: Indicate that the rule could not be successfully installed or enforced because the Application Identifier is invalid, unknown, or not applicable to the application required for detection.\n  - NO_QOS_FLOW_BOUND: Indicate that there is no QoS flow which the SMF can bind the PCC rule(s) to.\n  - FILTER_RES: Indicate that the Flow Information within the \"flowInfos\" attribute cannot be handled by the SMF because any of the restrictions defined in subclause 5.4.2 of 3GPP TS 29.212 [23] was not met.\n  - MISS_REDI_SER_ADDR: Indicate that the PCC rule could not be successfully installed or enforced at the SMF because there is no valid Redirect Server Address within the Traffic Control Data policy decision which the PCC rule refers to provided by the PCF and no preconfigured redirection address for this PCC rule at the SMF.\n  - CM_END_USER_SER_DENIED: Indicate that the charging system denied the service request due to service restrictions (e.g. terminate rating group) or limitations related to the end-user, for example the end-user's account could not cover the requested service.\n  - CM_CREDIT_CON_NOT_APP: Indicate that the charging system determined that the service can be granted to the end user but no further credit control is needed for the service (e.g. service is free of charge or is treated for offline charging).\n  - CM_AUTH_REJ: Indicate that the charging system denied the service request in order to terminate the service for which credit is requested.\n  - CM_USER_UNK: Indicate that the specified end user could not be found in the charging system.\n  - CM_RAT_FAILED: Indicate that the charging system cannot rate the service request due to insufficient rating input, incorrect AVP combination or due to an attribute or an attribute value that is not recognized or supported in the rating.\n  - UE_STA_SUSP: Indicates that the UE is in suspend state.\n"
       },
       "AfSigProtocol": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "NO_INFORMATION",
-              "SIP"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "NO_INFORMATION",
+          "SIP"
         ],
         "description": "Possible values are - NO_INFORMATION: Indicate that no information about the AF signalling protocol is being provided.  - SIP: Indicate that the signalling protocol is Session Initiation Protocol.\n",
         "nullable": true
       },
       "RuleOperation": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "CREATE_PCC_RULE",
-              "DELETE_PCC_RULE",
-              "MODIFY_PCC_RULE_AND_ADD_PACKET_FILTERS",
-              "MODIFY_ PCC_RULE_AND_REPLACE_PACKET_FILTERS",
-              "MODIFY_ PCC_RULE_AND_DELETE_PACKET_FILTERS",
-              "MODIFY_PCC_RULE_WITHOUT_MODIFY_PACKET_FILTERS"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "CREATE_PCC_RULE",
+          "DELETE_PCC_RULE",
+          "MODIFY_PCC_RULE_AND_ADD_PACKET_FILTERS",
+          "MODIFY_ PCC_RULE_AND_REPLACE_PACKET_FILTERS",
+          "MODIFY_ PCC_RULE_AND_DELETE_PACKET_FILTERS",
+          "MODIFY_PCC_RULE_WITHOUT_MODIFY_PACKET_FILTERS"
         ],
         "description": "Possible values are - CREATE_PCC_RULE: Indicates to create a new PCC rule to reserve the resource requested by the UE.  - DELETE_PCC_RULE: Indicates to delete a PCC rule corresponding to reserve the resource requested by the UE.. - MODIFY_PCC_RULE_AND_ADD_PACKET_FILTERS: Indicates to modify the PCC rule by adding new packet filter(s). - MODIFY_ PCC_RULE_AND_REPLACE_PACKET_FILTERS: Indicates to modify the PCC rule by replacing the existing packet filter(s). - MODIFY_ PCC_RULE_AND_DELETE_PACKET_FILTERS: Indicates to modify the PCC rule by deleting the existing packet filter(s). - MODIFY_PCC_RULE_WITHOUT_MODIFY_PACKET_FILTERS: Indicates to modify the PCC rule by modifying the QoS of the PCC rule.\n"
       },
       "RedirectAddressType": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "IPV4_ADDR",
-              "IPV6_ADDR",
-              "URL",
-              "SIP_URI"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "IPV4_ADDR",
+          "IPV6_ADDR",
+          "URL",
+          "SIP_URI"
         ],
         "description": "Possible values are - IPV4_ADDR: Indicates that the address type is in the form of \"dotted-decimal\" IPv4 address. - IPV6_ADDR: Indicates that the address type is in the form of IPv6 address. - URL: Indicates that the address type is in the form of Uniform Resource Locator. - SIP_URI: Indicates that the address type is in the form of SIP Uniform Resource Identifier.\n"
       },
       "QosFlowUsage": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "GENERAL",
-              "IMS_SIG"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "GENERAL",
+          "IMS_SIG"
         ],
         "description": "Possible values are - GENERAL: Indicate no specific QoS flow usage information is available.  - IMS_SIG: Indicate that the QoS flow is used for IMS signalling only.\n"
       },
       "FailureCause": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "PCC_RULE_EVENT",
-              "PCC_QOS_FLOW_EVENT",
-              "RULE_PERMANENT_ERROR",
-              "RULE_TEMPORARY_ERROR"
-            ]
-          },
-          {
-            "type": "string"
-          }
+        "type": "string",
+        "enum": [
+          "PCC_RULE_EVENT",
+          "PCC_QOS_FLOW_EVENT",
+          "RULE_PERMANENT_ERROR",
+          "RULE_TEMPORARY_ERROR"
         ]
       },
       "CreditManagementStatus": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "END_USER_SER_DENIED",
-              "CREDIT_CTRL_NOT_APP",
-              "AUTH_REJECTED",
-              "USER_UNKNOWN",
-              "RATING_FAILED"
-            ]
-          },
-          {
-            "type": "string"
-          }
+        "type": "string",
+        "enum": [
+          "END_USER_SER_DENIED",
+          "CREDIT_CTRL_NOT_APP",
+          "AUTH_REJECTED",
+          "USER_UNKNOWN",
+          "RATING_FAILED"
         ]
       },
       "SessionRuleFailureCode": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "NF_MAL",
-              "RES_LIM",
-              "UNSUCC_QOS_VAL",
-              "UE_STA_SUSP"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "NF_MAL",
+          "RES_LIM",
+          "UNSUCC_QOS_VAL",
+          "UE_STA_SUSP"
         ],
         "description": "Possible values are\n  - NF_MAL: Indicate that the PCC rule could not be successfully installed (for those provisioned from the PCF) or activated (for those pre-defined in SMF) or enforced (for those already successfully installed) due to SMF/UPF malfunction.\n  - RES_LIM: Indicate that the PCC rule could not be successfully installed (for those provisioned from PCF) or activated (for those pre-defined in SMF) or enforced (for those already successfully installed) due to a limitation of resources at the SMF/UPF.\n  - UNSUCC_QOS_VAL: indicate that the QoS validation has failed.\n  - UE_STA_SUSP: Indicates that the UE is in suspend state.\n"
       },
       "SteeringFunctionality": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "MPTCP",
-              "ATSSS_LL"
-            ]
-          },
-          {
-            "type": "string",
-            "description": "This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n"
-          }
+        "type": "string",
+        "enum": [
+          "MPTCP",
+          "ATSSS_LL"
         ],
         "description": "Possible values are\n  - MPTCP: Indicates that PCF authorizes the MPTCP functionality to support traffic steering, switching and splitting.\n  - ATSSS_LL: Indicates that PCF authorizes the ATSSS-LL functionality to support traffic steering, switching and splitting.\n"
       },
       "SteerModeValue": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "ACTIVE_STANDBY",
-              "LOAD_BALANCING",
-              "SMALLEST_DELAY",
-              "PRIORITY_BASED"
-            ]
-          },
-          {
-            "type": "string"
-          }
+        "type": "string",
+        "enum": [
+          "ACTIVE_STANDBY",
+          "LOAD_BALANCING",
+          "SMALLEST_DELAY",
+          "PRIORITY_BASED"
         ]
       }
     }

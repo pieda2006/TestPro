@@ -1,0 +1,37 @@
+# npmのインストール
+- npmとは
+Node Package Managerの略で、Node.jsのモジュールを管理するツールです。
+- インストールの実行
+```
+$ sudo apt install npm
+パッケージリストを読み込んでいます... 完了
+依存関係ツリーを作成しています
+状態情報を読み取っています... 完了
+=== 省略 ===
+node-sha (1.2.3-1) を設定しています ...
+node-slide (1.1.4-1) を設定しています ...
+npm (3.5.2-0ubuntu4) を設定しています ...
+libc-bin (2.23-0ubuntu10) のトリガを処理しています ...
+```
+- nodejsのシンボリックリンク作成
+```
+$ sudo ln -s "$(which nodejs)" /usr/local/bin/node
+```
+
+# Multi-file Swaggerのインストール
+- インストールの実行
+```
+$ sudo npm install -g multi-file-swagger
+loadDep:uri-js → cache ad ? u???????????????????????????????????????????????????aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaat
+npm WARN deprecated superagent@3.8.3: Please note that v5.0.1+ of superagent removes User-Agent header by default, therefore you may need to add it yourself (e.g. GitHub blocks requests without a User-Agent header).  This notice will go away with v5.0.2+ once it is released.
+=== 省略 ===
+    x     mqq util-deprecate@1.0.2
+    tqq slash@2.0.0
+    mqw uri-js@4.2.2
+      mqq punycode@2.1.1
+```
+# yamlファイルのマージ
+```
+$ multi-file-swagger -o yaml TS29512_Npcf_SMPolicyControl.yaml > TS29512_Npcf_SMPolicyControl_Merge.yaml
+```
+- allOf , oneOf, anyOfは対応していないので削除する

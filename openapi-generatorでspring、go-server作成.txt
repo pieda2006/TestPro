@@ -1,0 +1,91 @@
+# openapi-generator-cliをダウンロード
+```
+$ wget https://oss.sonatype.org/content/repositories/snapshots/org/openapitools/openapi-generator-cli/5.0.0-SNAPSHOT/openapi-generator-cli-5.0.0-20190710.043257-8.jar
+--2019-08-25 00:40:31--  https://oss.sonatype.org/content/repositories/snapshots/org/openapitools/openapi-generator-cli/5.0.0-SNAPSHOT/openapi-generator-cli-5.0.0-20190710.043257-8.jar
+oss.sonatype.org (oss.sonatype.org) をDNSに問いあわせています... 52.73.155.36, 3.221.64.215
+oss.sonatype.org (oss.sonatype.org)|52.73.155.36|:443 に接続しています... 接続しました。
+HTTP による接続要求を送信しました、応答を待っています... 200 OK
+長さ: 19560174 (19M) [application/java-archive]
+`openapi-generator-cli-5.0.0-20190710.043257-8.jar' に保存中
+
+openapi-generator-cli-5.0.0-20190710.043257-8.j 100%[====================================================================================================>]  18.65M  1.20MB/s    時間 15s
+
+2019-08-25 00:40:47 (1.27 MB/s) - `openapi-generator-cli-5.0.0-20190710.043257-8.jar' へ保存完了 [19560174/19560174]
+```
+# javaをインストール(javaがインストールされていない場合)
+```
+$ sudo apt install openjdk-8-jdk
+パッケージリストを読み込んでいます... 完了
+依存関係ツリーを作成しています
+状態情報を読み取っています... 完了
+=== 省略 ===
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+
+done.
+done.
+ikeda@ikeda:~/work/OpenAPI/Rel-16$ java -version
+openjdk version "1.8.0_222"
+OpenJDK Runtime Environment (build 1.8.0_222-8u222-b10-1ubuntu1~16.04.1-b10)
+OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
+```
+# mavenをインストール
+```
+$ sudo apt install maven
+パッケージリストを読み込んでいます... 完了
+依存関係ツリーを作成しています
+状態情報を読み取っています... 完了
+=== 省略 ===
+libmaven3-core-java (3.3.9-3) を設定しています ...
+libxom-java (1.2.10-1) を設定しています ...
+maven (3.3.9-3) を設定しています ...
+update-alternatives: /usr/bin/mvn (mvn) を提供するために自動モードで /usr/share/maven/bin/mvn を使います
+```
+
+# openapi-generator-cliを実行しソースコード生成
+```
+java -jar openapi-generator-cli-5.0.0-20190710.043257-8.jar generate    -i TS29512_Npcf_SMPolicyControl_Merge_Mod.json    -g spring    -o ../Npcf_SMPolicyControl
+[main] WARN  o.o.c.ignore.CodegenIgnoreProcessor - Output directory does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: spring (server)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'spring' is considered stable.
+[main] INFO  o.o.codegen.languages.SpringCodegen - ----------------------------------
+[main] INFO  o.o.c.languages.AbstractJavaCodegen - Environment variable JAVA_POST_PROCESS_FILE not defined so the Java code may not be properly formatted. To define it, try 'export JAVA_POST_PROCESS_FILE="/usr/local/bin/clang-format -i"' (Linux/Mac)
+=== 省略 ===
+[main] INFO  o.o.codegen.AbstractGenerator - writing file /home/ikeda/work/OpenAPI/Rel-16/../Npcf_SMPolicyControl/src/main/java/org/openapitools/configuration/OpenAPIDocumentationConfig.java
+[main] INFO  o.o.codegen.AbstractGenerator - writing file /home/ikeda/work/OpenAPI/Rel-16/../Npcf_SMPolicyControl/src/main/java/org/openapitools/api/ApiUtil.java
+[main] INFO  o.o.codegen.AbstractGenerator - writing file /home/ikeda/work/OpenAPI/Rel-16/../Npcf_SMPolicyControl/.openapi-generator-ignore
+[main] INFO  o.o.codegen.AbstractGenerator - writing file /home/ikeda/work/OpenAPI/Rel-16/../Npcf_SMPolicyControl/.openapi-generator/VERSION
+```
+
+# コンパイル実行
+```
+$ mvn clean package
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building openapi-spring 1.1.1.alpha-2
+[INFO] ------------------------------------------------------------------------
+=== 省略 ===
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 59.684 s
+[INFO] Finished at: 2019-08-25T23:07:50+09:00
+[INFO] Final Memory: 38M/287M
+[INFO] ------------------------------------------------------------------------
+```
+
+## コンパイルエラー
+TS29512_Npcf_SMPolicyControlのyamlファイルを変換したところ以下のコンパイルエラーが発生。
+```
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.7.0:compile (default-compile) on project openapi-spring: Compilation failure: Compilation failure:
+[ERROR] /home/ikeda/work/OpenAPI/Npcf_SMPolicyControl/src/main/java/org/openapitools/model/SmPolicyDecision.java:[307,32] 不適合な型: java.util.HashMap<>の型引数を推論できません
+[ERROR] 理由: 型変数K,Vのインスタンスが存在しないので、java.util.HashMap<K,V>は@javax.validation.Valid org.openapitools.jackson.nullable.JsonNullable<java.util.Map<java.lang.String,org.openapitools.model.UsageMonitoringData>>に適合しません
+[ERROR] /home/ikeda/work/OpenAPI/Npcf_SMPolicyControl/src/main/java/org/openapitools/model/SmPolicyDecision.java:[309,16] シンボルを見つけられません
+[ERROR] シンボル:   メソッド put(java.lang.String,org.openapitools.model.UsageMonitoringData)
+[ERROR] 場所: タイプ@javax.validation.Valid org.openapitools.jackson.nullable.JsonNullable<java.util.Map<java.lang.String,org.openapitools.model.UsageMonitoringData>>の変数 umDecs
+```
+- コンパイルエラー対応
+	- JsonNullableの変数にHashMapを代入しようとしてエラーになっているためJsonNullable.of(new HashMap<K,V>)の結果を代入するように変更。
+	- JsonNullableの変数に対してputをしているのでJsonNullable.get()の結果HashMapのputを呼ぶように変更。
