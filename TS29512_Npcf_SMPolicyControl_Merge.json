@@ -3371,23 +3371,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
@@ -3525,23 +3508,6 @@
                         "pattern": "^(MacroNGeNB-[A-Fa-f0-9]{5}|LMacroNGeNB-[A-Fa-f0-9]{6}|SMacroNGeNB-[A-Fa-f0-9]{5})$"
                       }
                     },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "n3IwfId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "gNbId"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "ngeNbId"
-                        ]
-                      }
-                    ],
                     "required": [
                       "plmnId"
                     ]
