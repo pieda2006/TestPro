@@ -1,0 +1,868 @@
+syntax="proto3";
+
+package pfcp;
+
+option java_multiple_files = true;
+option java_outer_classname = "n4ifProto";
+option java_package = "fivegc.smf.Service.UPF_Mng.model.PfcpMsg";
+
+import "google/protobuf/empty.proto";
+
+//3GPP TS 29.244 V15.4.0 (2018-12)
+
+
+service PFCPSessionRelatedMessages {
+	// PFCPSessionEstablishment [ Request/Response : SBI -> CUPS_IF ]
+	rpc	PFCPSessionEstablishmentCall(PFCPSessionEstablishmentRequest) returns (PFCPSessionEstablishmentResponse) {}
+
+	// PFCPSessionModification [ Request/Response : SBI -> CUPS_IF ]
+	rpc	PFCPSessionModificationCall(PFCPSessionModificationRequest) returns (PFCPSessionModificationResponse) {}
+
+	// PFCPSessionDeletion [ Request/Response : SBI -> CUPS_IF ]
+	rpc	PFCPSessionDeletionCall(PFCPSessionDeletionRequest) returns (PFCPSessionDeletionResponse) {}
+
+	// PFCPSessionReport [ Request : CUPS_IF -> SBI ] [ Response : SBI -> CUPS_IF ]
+	rpc	PFCPSessionReportRequestCall(PFCPSessionReportRequest) returns (google.protobuf.Empty) {}
+	rpc	PFCPSessionReportResponseCall(PFCPSessionReportResponse) returns (google.protobuf.Empty) {}
+
+	// EndmarkerSend [ Request : SBI -> CUPS_IF ]
+	rpc	EndmarkerSendCall(EndmarkerRequest) returns (EndmarkerResponse) {}
+}
+
+//7.3   Message Types
+enum MessageTypes {
+	MessageTypes_Reserved			=  0;
+	//PFCP Node related messages
+	HeartbeatRequest				=  1;
+	HeartbeatResponse				=  2;
+	PFDManagementRequest			=  3;
+	PFDManagementResponse			=  4;
+	AssociationSetupRequest			=  5;
+	AssociationSetupResponse		=  6;
+	AssociationUpdateRequest		=  7;
+	AssociationUpdateResponse		=  8;
+	AssociationReleaseRequest		=  9;
+	AssociationReleaseResponse		= 10;
+	VersionNotSupportedResponse		= 11;
+	NodeReportRequest				= 12;
+	NodeReportResponse				= 13;
+	//PFCPSessionSetDeletionRequest		=14; // Not used over the N4
+	//PFCPSessionSetDeletionResponse	=15; // Not used over the N4
+	//For future use	16 to 49
+	//PFCP Session related messages
+	SessionEstablishmentRequest		= 50;
+	SessionEstablishmentResponse	= 51;
+	SessionModificationRequest		= 52;
+	SessionModificationResponse		= 53;
+	SessionDeletionRequest			= 54;
+	SessionDeletionResponse			= 55;
+	SessionReportRequest			= 56;
+	SessionReportResponse			= 57;
+	//For future use	58 to 99
+	//Other messages
+	//For future use	100 to 255
+
+}
+
+// Send to UPF Address
+message UPFAddress {
+	bool	bitV4		= 1;
+	bool	bitV6		= 2;
+	bytes 	ipv4Addr	= 3; //  4oct
+	bytes 	ipv6Addr	= 4; // 16oct
+}
+
+//7.2.2.3	PFCP Header for Session Related Messages
+//Figure 7.2.2.3-1: PFCP message Header for session related messages
+//Note : This header only sets the parameters that need to be distributed between SMF Component and UPF.
+//       Setting is needed sequenseNumber in case of the occasion sent to SMF from UPF or the reply.
+message MessageHeader {
+	bytes headseid			= 1; //8oct
+	bytes sequenseNumber	= 2; //3oct
+}
+
+//8.2	Information Elements
+
+//8.2.1	Cause
+enum Cause {
+	Reserved							=  0;
+	Success								=  1;
+	ReasonNotSpecified					= 64;
+	SessionContextNotFound				= 65;
+	MandatoryIEMissing					= 66;
+	ConditionalIEMissing				= 67;
+	InvalidLength						= 68;
+	MandatoryIEIncorrect				= 69;
+	InvalidForwardingPolicy				= 70;
+	InvalidF_TEIDAllocationOption		= 71;
+	NoEstablishedPFCPAssociation		= 72;
+	RuleCreation_ModificationFailure	= 73;
+	PFCPentityInCongestion				= 74;
+	NoResourcesAvailable				= 75;
+	ServiceNotSupported					= 76;
+	SystemFailure						= 77;
+}
+
+
+//8.2.2	Source Interface
+enum SourceInterface {
+	SI_ACCESS	= 0;
+	SI_CORE		= 1;
+	SI_SGI_N6_LAN	= 2;
+	SI_CP_FUNCTION	= 3;
+}
+
+//8.2.3 F-TEID
+message F_TEID {
+    bool    bitCHID     = 1;
+    bool    bitCH       = 2;
+    bool    bitV6       = 3;
+    bool    bitV4       = 4;
+    uint32  teID		= 6; //  4oct
+    bytes   iPv4Address	= 7; //  4oct
+    bytes   iPv6Address	= 8; // 16oct
+    int32   chooseID    = 9; //  1oct
+
+}
+
+//8.2.4	Network Instance
+//The Network instance field shall be encoded as an OctetString ...
+message NetworkInstance {
+	bytes networkInstance	= 1; // Xoct
+}
+
+
+//8.2.5	SDF Filter
+message SDFFilter {
+	bool	bitBID					=  1;
+	bool	bitFL					=  2;
+	bool	bitSPI					=  3;
+	bool	bitTTC					=  4;
+	bool	bitFD					=  5;
+	int32	lengthofFlowDescription	=  6; // 2oct
+	bytes	flowDescription 		=  7; // lengthofFlowDescription oct
+	bytes	tosTrafficClass			=  8; // 2oct
+	bytes 	securityParameterIndex	=  9; // 4oct
+	bytes	flowLabel				= 10; // 3oct
+	uint32	sdfFilterID				= 11; // 4oct
+}
+
+
+//8.2.7	Gate Status
+message GateStatus {
+	enum Gate {
+		OPEN	= 0;
+		CLOSE	= 1;
+	}
+	Gate ulGate	= 1;
+	Gate dlGate	= 2;
+}
+
+
+//8.2.8	MBR
+//The UL/DL MBR fields shall be encoded as kilobits per second (1 kbps = 1000 bps) in binary value. 
+message MBR {
+	uint64	ulMBR	= 1;
+	uint64	dlMBR	= 2;
+}
+
+
+//8.2.9	GBR
+//The UL/DL GBR fields shall be encoded as kilobits per second (1 kbps = 1000 bps) in binary value. 
+message GBR {
+	uint64	ulGBR	= 1;
+	uint64	dlGBR	= 2;
+}
+
+
+//8.2.11	Precedence
+//The Precedence value shall be encoded as an Unsigned32 binary integer value.
+message Precedence {
+	uint32	precedenceValue	= 1; // 4oct
+}
+
+
+//8.2.12	Transport Level Marking
+//The ToS/Traffic Class shall be encoded on two octets as an OctetString.
+message TransportLevelMarking {
+	bytes	tosTrafficClass	= 1; // 2oct
+}
+
+
+//8.2.13	Volume Threshold
+message VolumeThreshold {
+	bool	bitTOVOL		= 1;
+	bool	bitULVOL		= 2;
+	bool	bitDLVOL		= 3;
+	uint64	totalVolume		= 4; // 8oct
+	uint64	uplinkVolume	= 5; // 8oct
+	uint64	downlinkVolume	= 6; // 8oct
+}
+
+
+//8.2.19	Reporting Triggers
+message ReportingTriggers {
+	bool	bitPERIO		=  1;
+	bool	bitVOLTH		=  2;
+	bool	bitTIMTH		=  3;
+	bool	bitQUHTI		=  4;
+	bool	bitSTART		=  5;
+	bool	bitSTOPT		=  6;
+	bool	bitDROTH		=  7;
+	bool	bitLIUSA		=  8;
+	bool	bitVOLQU		=  9;
+	bool	bitTIMQU		= 10;
+	bool	bitENVCL		= 11;
+	bool	bitMACAR		= 12;
+	bool	bitEVETH		= 13;
+	bool	bitEVEQU		= 14;
+}
+
+
+//8.2.20	Redirect Information
+message RedirectInformation {
+	enum RedirectAddressType {
+		IPv4	= 0;
+		IPv6	= 1;
+		URL		= 2;
+		SIPURI	= 3;
+	}
+	RedirectAddressType	redirectAddressType				= 1;
+	int32				redirectServerAddressLength		= 2; // 2oct
+	string				redirectServerAddress			= 3; // redirectServerAddressLength oct
+}
+
+
+//8.2.21	Report Type
+message ReportType {
+    bool    bitUPIR     = 1;
+    bool    bitERIR     = 2;
+    bool    bitUSAR     = 3;
+    bool    bitDLDR     = 4;
+}
+
+
+//8.2.23	Forwarding Policy
+message ForwardingPolicy {
+	int32	forwardingPolicyLength			= 1; // 1oct
+	bytes	forwardingPolicyIdentifier		= 2; // forwardingPolicyLength oct
+}
+
+
+//8.2.24	Destination Interface
+enum DestinationInterface {
+	DI_ACCESS		= 0;
+	DI_CORE		    = 1;
+	DI_SGI_N6_LAN	= 2;
+	DI_CP_FUNCTION	= 3;
+	DI_LIFUNCTION	= 4;
+}
+
+
+//8.2.26	Apply Action
+message ApplyAction {
+	bool	bitDROP	= 1;
+	bool	bitFORW	= 2;
+	bool	bitBUFF	= 3;
+	bool	bitNOCP	= 4;
+	bool	bitDUPL	= 5;
+}
+
+
+//8.2.27	Downlink Data Service Information
+message DownlinkDataServiceInformation {
+	bool							bitQFII						= 1;
+	bool							bitPPI						= 2;
+	PagingPolicyIndicationValue		pagingPolicyIndicationValue	= 3;
+	QFI								qfi							= 4;
+}
+
+
+//8.2.36	Packet Detection Rule ID (PDR ID)
+//Octets 5 to 6 contain the Rule ID and shall be encoded as an integer.
+message PDRID {
+	int32	ruleID	= 1; // 2oct
+}
+
+
+//8.2.37	F-SEID
+message F_SEID {
+	bool	bitV4		= 1;
+	bool	bitV6		= 2;
+	bytes	seId		= 3; //  8oct
+	bytes 	ipv4Addr	= 4; //  4oct
+	bytes 	ipv6Addr	= 5; // 16oct
+}
+
+
+//8.2.38	Node ID
+message NodeID {
+	enum NodeIDType {
+		IPV4	= 0;
+		IPV6	= 1;
+		FQDN	= 2;
+	}
+	NodeIDType	nodeIdType	= 1;
+	bytes		nodeIdValue	= 2; //IPv4 : 4oct, IPv6 : 16oct, FQDN : Xoct
+}
+
+
+//8.2.40	Measurement Method
+message MeasurementMethod {
+	bool	bitDURAT		= 1;
+	bool	bitVOLUM		= 2;
+	bool	bitEVENT		= 3;
+}
+
+
+//8.2.41	Usage Report Trigger
+message UsageReportTrigger {
+	bool	bitPERIO		=  1;
+	bool	bitVOLTH		=  2;
+	bool	bitTIMTH		=  3;
+	bool	bitQUHTI		=  4;
+	bool	bitSTART		=  5;
+	bool	bitSTOPT		=  6;
+	bool	bitDROTH		=  7;
+	bool	bitIMMER		=  8;
+	bool	bitVOLQU		=  9;
+	bool	bitTIMQU		= 10;
+	bool	bitLIUSA		= 11;
+	bool	bitTERMR		= 12;
+	bool	bitMONIT		= 13;
+	bool	bitENVCL		= 14;
+	bool	bitMACAR		= 15;
+	bool	bitEVETH		= 16;
+	bool	bitEVEQU		= 17;
+}
+
+
+//8.2.44	Volume Measurement
+message VolumeMeasurement {
+	bool	bitTOVOL		= 1; 
+	bool	bitULVOL		= 2;
+	bool	bitDLVOL		= 3;
+	uint64	totalVolume		= 4;
+	uint64	uplinkVolume	= 5;
+	uint64	downlinkVolume	= 6;
+}
+
+//8.2.52	Start Time
+message StartTime {
+	uint64	startTime		= 1;
+}
+
+//8.2.53	End Time
+message EndTime {
+	uint64	endTime			= 1;
+}
+
+//8.2.54	URR ID
+//The URR ID value shall be encoded as an Unsigned32 binary integer value.
+message URRID {
+	uint32	urrIDvalue	= 1; // 4oct
+}
+
+
+//8.2.56	Outer Header Creation
+message OuterHeaderCreation {
+	message OuterHeaderCreationDescription {
+		bool	bitGTP_IPv4	= 1;
+		bool	bitGTP_IPv6	= 2;
+		bool	bitUDP_IPv4	= 3;
+		bool	bitUDP_IPv6	= 4;
+		bool	bitIPv4		= 5;
+		bool	bitIPv6		= 6;
+		bool	bitC_TAG	= 7;
+		bool	bitS_TAG	= 8;
+	}
+	OuterHeaderCreationDescription	outerHeaderCreationDescription	= 1;
+	uint32							teID							= 2; //  4oct
+	bytes							iPv4Address						= 3; //  4oct
+	bytes							iPv6Address						= 4; // 16oct
+	int32							portNumber						= 5; //  2oct
+	uint32							c_TAG							= 6; //  3oct
+	uint32							s_TAG							= 7; //  3oct
+}
+
+
+//8.2.62	UE IP Address
+message UEIPAddress {
+	bool	bitV6						= 1;
+	bool	bitV4						= 2;
+	bool	bitSD						= 3;
+	bool	bitIPv6D					= 4;
+	bytes	ipv4address					= 5; //  4cot
+	bytes	ipv6address					= 6; // 16oct
+	bytes	ipv6PrefixDelegationBits	= 7; //  1oct
+}
+
+//8.2.64	Outer Header Removal
+message OuterHeaderRemoval {
+	enum OuterHeaderRemovalDescription {
+		GTPIPv4		= 0;
+		GTPIPv6		= 1;
+		UDPIPv4		= 2;
+		UDPIPv6		= 3;
+		IPv4		= 4;
+		IPv6		= 5;
+		GTPUDPIP	= 6;
+		VLANSTAG	= 7;
+		STAGCTAG	= 8;
+	}
+	OuterHeaderRemovalDescription	outerHeaderRemovalDescription	= 1;
+
+	message	GTP_UExtensionHeaderDeletion {
+		bool pduSessionContainer	= 1;
+	}
+	GTP_UExtensionHeaderDeletion	gtp_UExtensionHeaderDeletion	= 2;
+}
+
+
+//8.2.67	Header Enrichment
+message HeaderEnrichment {
+	enum HeaderType {
+		HTTP	= 0;
+	}
+	HeaderType	headerType					= 1;
+	int32		lengthofHeaderFieldName		= 2; // 1oct
+	bytes		headerFieldName				= 3; // lengthofHeaderFieldName oct
+	int32		lengthofHeaderFieldValue	= 4; // 1oct
+	bytes		headerFieldValue			= 5; // lengthofHeaderFieldValue oct
+}
+
+//8.2.71	UR-SEQN
+//The UR-SEQN value shall be encoded as an Unsigned32 binary integer value. 
+message URSEQN {
+	uint32	urSEQN	 	= 1; // 4oct
+}
+
+//8.2.74	FAR ID
+//The FAR ID value shall be encoded as an Unsigned32 binary integer value. 
+message FARID {
+	uint32	farIDvalue	= 1; // 4oct
+}
+
+
+//8.2.75	QER ID
+//The QER ID value shall be encoded as an Unsigned32 binary integer value.
+message QERID {
+	uint32	qerIDvalue	= 1; // 4oct
+}
+
+
+//8.2.79	PDN Type
+enum PDNType {
+	RESERVE		= 0;	//For future use. Shall not be sent.
+	IPv4		= 1;
+	IPv6		= 2;
+	IPv4v6		= 3;
+	NONIP		= 4;
+	ETHERNET	= 5;
+}
+
+
+//8.2.89	QFI
+message QFI {
+	int32	QFIvalue	= 1; // 1oct(6bit)
+}
+
+
+//8.2.97	Proxying
+message Proxying {
+	bool	bitARP	= 1;
+	bool	bitINS	= 2;
+}
+
+
+//8.2.101	User ID
+message UserID {
+	bool	bitIMSIF		=  1;
+	bool	bitIMEIF		=  2;
+	bool	bitMSISDNF		=  3;
+	bool	bitNAIF			=  4;
+	int32	lengthOfIMSI	=  5; // 1oct
+	bytes	imsi			=  6; // lengthOfIMSI oct
+	int32	lengthOfIMEI	=  7; // 1oct
+	bytes	imei			=  8; // lengthOfIMEI oct
+	int32	lengthOfMSISDN	=  9; // 1oct
+	bytes	msisdn			= 10; //lengthOfMSISDN oct
+	int32	lengthOfNAI		= 11; // 1oct
+	bytes	nai				= 12; // lengthOfNAI oct
+}
+
+
+//7.5.2.2	Create PDR IE within PFCP Session Establishment Request
+//Table 7.5.2.2-2: PDI IE within PFCP Session Establishment Request
+message PDI {
+				SourceInterface					sourceInterface					= 1;
+				F_TEID							localF_TEID						= 2;
+				NetworkInstance					networkInstance					= 3;
+				UEIPAddress						ueIPaddress						= 4;
+//				TrafficEndpointID				trafficEndpointID				= 5;
+	repeated	SDFFilter						sdfFilter						= 6;
+//				ApplicationID					applicationID					= 7;
+//				EthernetPDUSessionInformation	ethernetPDUSessionInformation	= 8;
+//	repeated	EthernetPacketFilter			ethernetPacketFilter			= 9;
+	repeated	QFI								qfi								=10;
+//	repeated	Framed_Route					framed_Route					=11;
+//	repeated	Framed_Routing					framed_Routing					=12;
+//	repeated	Framed_IPv6_Route				framed_IPv6_Route				=13;
+}
+
+
+//7.5.2.2	Create PDR IE within PFCP Session Establishment Request
+//Table 7.5.2.2-1: Create PDR IE within PFCP Session Establishment Request
+message CreatePDR {
+				PDRID						pdrID						= 1;
+				Precedence					precedence					= 2;
+				PDI							pdi							= 3;
+				OuterHeaderRemoval			outerHeaderRemoval			= 4;
+				FARID						farID						= 5;
+	repeated	URRID						urrID						= 6;
+	repeated	QERID						qerID						= 7;
+//	repeated	ActivatePredefinedRules		activatePredefinedRules		= 8;
+}
+
+//7.5.2.3	Create FAR IE within PFCP Session Establishment Request
+//Table 7.5.2.3-2: Forwarding Parameters IE in FAR 
+message ForwardingParameters {
+	DestinationInterface	destinationInterface		= 1;
+	NetworkInstance			networkInstance				= 2;
+	RedirectInformation     redirectInformation			= 3;
+	OuterHeaderCreation     outerHeaderCreation			= 4;
+	bytes					transportLevelMarking		= 5; // 2oct
+	ForwardingPolicy        forwardingPolicy			= 6;
+	HeaderEnrichment        headerEnrichment			= 7;
+	int32					linkedTrafficEndpointID		= 8; // range of 0 to 255
+	Proxying                proxying					= 9;
+}
+
+
+//7.5.2.3	Create FAR IE within PFCP Session Establishment Request
+//Table 7.5.2.3-1: Create FAR IE within PFCP Session Establishment Request
+message CreateFAR {
+	FARID					farID					= 1;
+	ApplyAction				applyAction				= 2;
+	ForwardingParameters	forwardingParameters	= 3;
+//	DuplicatingParameters	duplicatingParameters	= 4;
+//	BARID					barID					= 5;
+}
+
+
+//7.5.2.4	Create URR IE within PFCP Session Establishment Request
+//Table 7.5.2.4-1: Create URR IE within PFCP Session Establishment Request 
+message CreateURR {
+	URRID						urrID						=  1;
+	MeasurementMethod			measurementMethod			=  2;
+	ReportingTriggers			reportingTriggers			=  3;
+//	MeasurementPeriod			measurementPeriod			=  4;
+	VolumeThreshold				volumeThreshold				=  5;
+//	VolumeQuota					volumeQuota					=  6;
+//	EventThreshold				eventThreshold				=  7;
+//	EventQuota					eventQuota					=  8;
+//	TimeThreshold				timeThreshold				=  9;
+//	TimeQuota					timeQuota					= 10;
+//	QuotaHoldingTime			quotaHoldingTime			= 11;
+//	DroppedDLTrafficThreshold	droppedDLTrafficThreshold	= 12;
+//	MonitoringTime				monitoringTime				= 13;
+//	SubsequentVolumeThreshold	subsequentVolumeThreshold	= 14;
+//	SubsequentTimeThreshold		subsequentTimeThreshold		= 15;
+//	SubsequentVolumeQuota		subsequentVolumeQuota		= 16;
+//	SubsequentTimeQuota			subsequentTimeQuota			= 17;
+//	SubsequentEventThreshold	subsequentEventThreshold	= 18;
+//	SubsequentEventQuota		subsequentEventQuota		= 19;
+//	InactivityDetectionTime		inactivityDetectionTime		= 20;
+//	LinkedURRID					linkedURRID					= 21;
+//	MeasurementInformation		measurementInformation		= 22;
+//	FARIDforQuotaAction			farIDforQuotaAction			= 23;
+//	EthernetInactivityTimer		ethernetInactivityTimer		= 24;
+//	AdditionalMonitoringTime	additionalMonitoringTime	= 25;
+}
+
+
+//7.5.2.5	Create QER IE within PFCP Session Establishment Request
+//Table 7.5.2.5-1: Create QER IE within PFCP Session Establishment Request
+message CreateQER {
+	QERID					qerID					=  1;
+//	QERCorrelationID        qerCorrelationID        =  2;
+	GateStatus              gateStatus              =  3;
+	MBR                     maximumBitrate          =  4;
+	GBR                     guaranteedBitrate       =  5;
+//	PacketRate              packetRate              =  6;
+//	DLFlowLevelMarking      dlFlowLevelMarking      =  7;
+	QFI                     qosflowidentifier       =  8;
+//	RQI                     reflectiveQoS           =  9;
+//	PagingPolicyIndicator   pagingPolicyIndicator   = 10;
+//	AveragingWindow         averagingWindow         = 11;
+}
+
+
+//7.5.4.2   Update PDR IE within PFCP Session Modification Request
+//Table 7.5.4.2-1: Update PDR IE within PFCP Session Modification Request
+message UpdatePDR{
+				PDRID						pdrID						= 1;
+//				OuterHeaderRemoval			outerHeaderRemoval			= 2;
+//				Precedence					precedence					= 3;
+//				PDI							pdi							= 4;
+				FARID						farID						= 5;
+//	repeated	URRID						urrID						= 6;
+// 	repeated	QERID						qerID						= 7;
+//	repeated	ActivatePredefinedRules		activatePredefinedRules		= 8;
+//	repeated	DeactiveatePredefinedRules	deactiveatePredefinedRules	= 9;
+}
+
+//7.5.4.3	Update FAR IE within PFCP Session Modification Request
+//Table 7.5.4.3-2: Update Forwarding Parameters IE in FAR 
+message UpdateForwardingParameters {
+	DestinationInterface		destinationInterface		=  1;
+	NetworkInstance 			networkinstance 			=  2;
+//	RedirectInformation 		redirectInformation 		=  3;
+	OuterHeaderCreation 		outerHeaderCreation 		=  4;
+//	TransportLevelMarking		transportLevelMarking		=  5;
+//	ForwardingPolicy			forwardingPolicy			=  6;
+//	HeaderEnrichment			headerEnrichment			=  7;
+//	PFCPSMReq_Flags 			pfcpSMReq_Flags 			=  8;
+//	TrafficEndpointID			linkedTrafficEndpointID 	=  9;
+}
+
+//7.5.4.3	Update FAR IE within PFCP Session Modification Request
+//Table 7.5.4.3-1: Update FAR IE within PFCP Session Modification Request 
+message UpdateFAR {
+				FARID							farID							=  1;
+				ApplyAction                     applyAction						=  2;
+				UpdateForwardingParameters      updateForwardingParameters		=  3;
+//	repeated	UpdateDuplicatingParameters     updateDuplicatingParameters		=  4;
+//				BARID                           barID							=  5;
+}
+
+
+//7.5.4.5	Update QER IE within PFCP Session Modification Request 
+//Table 7.5.4.5-1: Update QER IE within PFCP Session Modification Request 
+message UpdateQER {
+	QERID					qerID					=  1;
+//	QERCorrelationID        qerCorrelationID        =  2;
+	GateStatus              gateStatus              =  3;
+	MBR                     maximumBitrate          =  4;
+	GBR                     guaranteedBitrate       =  5;
+//	PacketRate              packetRate              =  6;
+//	DLFlowLevelMarking      dlFlowLevelMarking      =  7;
+	QFI                     qosflowidentifier       =  8;
+//	RQI                     reflectiveQoS           =  9;
+//	PagingPolicyIndicator   pagingPolicyIndicator   = 10;
+//	AveragingWindow         averagingWindow         = 11;
+}
+
+//7.5.4.6	Remove PDR IE within PFCP Session Modification Request
+//Table 7.5.4.6-1: Remove PDR IE within PFCP Session Modification Request 
+message RemovePDR {
+                PDRID                       pdrID                       = 1;
+}
+
+//7.5.4.7       Remove FAR IE within PFCP Session Modification Request
+//Table 7.5.4.7-1: Remove FAR IE within PFCP Session Modification Request 
+message RemoveFAR {
+                FARID                       farID                       = 1;
+}
+
+//7.5.4.9	Remove QER IE PFCP Session Modification Request
+//Table 7.5.4.9-1: Remove QER IE PFCP Session Modification Request
+message RemoveQER  {
+                QERID                       qerID                       = 1;
+}
+
+//7.5.8.2	Downlink Data Report IE within PFCP Session Report Request
+//Table 7.5.8.2-1: Downlink Data Report IE within PFCP Session Report Request 
+message DownlinkDataReport {
+	repeated	PDRID							PDRID							= 1;
+	repeated	DownlinkDataServiceInformation	DownlinkDataServiceInformation	= 2;
+}
+
+
+//RFC2474
+//3.	Differentiated Services Field Definition
+message PagingPolicyIndicationValue {
+	bytes	diffServ	= 1;	// 1oct(6bit)
+}
+
+
+//7.5.2	PFCP Session Establishment Request
+//Table 7.5.2.1-1: Information Elements in an PFCP Session Establishment Request
+message PFCPSessionEstablishmentRequest {
+				UPFAddress					upfAddr						=  1;
+				MessageHeader				header						=  2;
+				NodeID						nodeID						=  3;
+				F_SEID						cpF_SEID					=  4;
+	repeated	CreatePDR					createPDR					=  5;
+	repeated	CreateFAR					createFAR					=  6;
+	repeated	CreateURR					createURR					=  7;
+	repeated	CreateQER					createQER					=  8;
+//				CreateBAR					createBAR					=  9;
+//	repeated	CreateTrafficEndpoint		createTrafficEndpoint		= 10;
+				PDNType						pdnType						= 11;
+//				UserPlaneInactivityTimer    userPlaneInactivityTimer    = 12;
+				UserID                      userID                      = 13;
+//				TraceInformation            traceInformation            = 14;
+}
+
+//7.5.3	PFCP Session Establishment Response
+//Table 7.5.3.1-1: Information Elements in a PFCP Session Establishment Response
+message PFCPSessionEstablishmentResponse {
+				MessageHeader				header						=  1;
+				NodeID						nodeID						=  2;
+				Cause						cause						=  3;
+//				OffendingIE					offendingIE					=  4;
+				F_SEID						upF_SEID					=  5;
+//	repeated	CreatedPDR					createdPDR					=  6;
+//				LoadControlInformation		loadControlInformation		=  7;
+//				OverloadControlInformation	overloadControlInformation	=  8;
+//				FailedRuleID				failedRuleID				=  9;
+//				CreatedTrafficEndpoint		createdTrafficEndpoint		= 10;
+}
+
+//7.5.4	PFCP Session Modification Request
+//Table 7.5.4.1-1: Information Elements in a PFCP Session Modification Request
+message PFCPSessionModificationRequest {
+				UPFAddress					upfAddr						=  1;
+				MessageHeader				header						=  2;
+//				F_SEID						cpF_SEID					=  3;
+	repeated	RemovePDR					removePDR					=  4;
+	repeated	RemoveFAR					removeFAR					=  5;
+//	repeated	RemoveURR					removeURR					=  6;
+	repeated	RemoveQER					removeQER					=  7;
+//				RemoveBAR					removeBAR					=  8;
+//				RemoveTrafficEndpoint		removeTrafficEndpoint		=  9;
+	repeated	CreatePDR					createPDR					= 10;
+	repeated	CreateFAR					createFAR					= 11;
+	repeated	CreateURR					createURR					= 12;
+	repeated	CreateQER					createQER					= 13;
+//				CreateBAR					createBAR					= 14;
+//				CreateTrafficEndpoint		createTrafficEndpoint		= 15;
+	repeated	UpdatePDR					updatePDR					= 16;
+	repeated	UpdateFAR					updateFAR					= 17;
+//	repeated	UpdateURR					updateURR					= 18;
+	repeated	UpdateQER					updateQER					= 19;
+//				UpdateBAR					updateBAR					= 20;
+//				UpdateTrafficEndpoint		updateTrafficEndpoint		= 21;
+//				PFCPSMReq_Flags 			pfcpSMReq_Flags				= 22;
+//	repeated	QueryURR					queryURR					= 23;
+//				UserPlaneInactivityTimer	userPlaneInactivityTimer	= 24;
+//				QueryURRReference			queryURRReference			= 25;
+//				TraceInformation			traceInformation			= 26;
+}
+
+
+//7.5.5 PFCP Session Modification Response
+//Table 7.5.5.1-1: Information Elements in a PFCP Session Modification Response
+message PFCPSessionModificationResponse {
+				MessageHeader						header									=  1;
+				Cause								cause									=  2;
+//				OffendingIE 						offendingIE 							=  3;
+//	repeated	CreatedPDR							createdPDR								=  4;
+//				LoadControlInformation				loadControlInformation					=  5;
+//				OverloadControlInformation			overloadControlInformation				=  6;
+//	repeated	UsageReport 						usageReport 							=  7;
+//				FailedRuleID						failedRuleID							=  8;
+//				AdditionalUsageReportsInformation	additionalUsageReportsInformation		=  9;
+//				CreatedTrafficEndpoint				created/pdatedTrafficEndpoint			= 10;
+}
+
+//7.5.6	PFCP Session Deletion Request 
+//Table 7.5.6-1: Information Elements in a PFCP Session Deletion Request
+message PFCPSessionDeletionRequest {
+				UPFAddress					upfAddr						=  1;
+				MessageHeader				header						=  2;
+}
+
+
+//Table 7.5.7.2-1: Usage Report IE within PFCP Session Deletion Response
+message UsageReportDel {
+				URRID						urrID						=  1;
+				URSEQN						urSEQN						=  2;
+				UsageReportTrigger			usageReportTrigger			=  3;
+				StartTime					startTime					=  4;
+				EndTime						endTime						=  5;
+				VolumeMeasurement			volumeMeasurement			=  6;
+//				DurationMeasurement			durationMeasurement			=  7;
+//				TimeofFirstPacket			timeofFirstPacket			=  8;
+//				TimeofLastPacket			timeofLastPacket			=  9;
+//				UsageInformation			usageInformation			= 10;
+//				EthernetTrafficInformation	ethernetTrafficInfo			= 11;
+}
+
+
+//7.5.7	PFCP Session Deletion Response
+//Table 7.5.7.1-1: Information Elements in a PFCP Session Deletion Response
+message PFCPSessionDeletionResponse {
+				MessageHeader				header						= 1;
+				Cause						cause						= 2;
+//				OffendingIE					offendingIE					= 3;
+//				Load ControlInformation		loadControlInformation		= 4;
+//				OverloadControlInformation	overloadontrolInformation	= 5;
+	repeated	UsageReportDel				usageReportDel				= 6;
+}
+
+//Table 7.5.8.3-1: Usage Report IE within PFCP Session Report Request
+message UsageReportRep {
+				URRID								urrID					=  1;
+				URSEQN								urSEQN					=  2;
+				UsageReportTrigger					usageReportTrigger		=  3;
+				StartTime							startTime				=  4;
+				EndTime								endTime					=  5;
+				VolumeMeasurement					volumeMeasurement		=  6;
+//				DurationMeasurement					durationMeasurement		=  7;
+//				ApplicationDetectionInformation		appDelInfo				=  8;
+//				UEIPaddress							ueIPaddress				=  9;
+//				NetworkInstance						networkInstance			= 10;
+//				TimeofFirstPacket					timeofFirstPacket		= 11;
+//				TimeofLastPacket					timeofLastPacket		= 12;
+//				UsageInformation					usageInformation		= 13;
+//				QueryURRReference					queryURRReference		= 14;
+//				EventTimeStamp						eventTimeStamp			= 15;
+//				EthernetTrafficInformation			ethernetTrafficInfo		= 16;
+}
+
+//7.5.8	PFCP Session Report Request 
+//Table 7.5.8-1: Information Elements in a PFCP Session Report Request
+message PFCPSessionReportRequest {
+				UPFAddress							upfAddr								= 1;
+				MessageHeader						header								= 2;
+				ReportType							reportType							= 3;
+				DownlinkDataReport					downlinkDataReport					= 4;
+	repeated	UsageReportRep						usageReportRep						= 5;
+//				ErrorIndicationReport				errorIndicationReport				= 6;
+//				LoadControlInformation				loadControlInformation				= 7;
+//				OverloadControlInformation			overloadControlInformation			= 8;
+//				AdditionalUsageReportsInformation	additionalUsageReportsInformation	= 9;
+}
+
+//7.5.9	PFCP Session Report Response
+//Table 7.5.9.1-1: Information Elements in a PFCP Session Report Response
+message PFCPSessionReportResponse {
+				UPFAddress					upfAddr						= 1;
+				MessageHeader				header						= 2;
+				Cause						cause						= 3;
+//				OffendingIE					offendingIE					= 4;
+//				UpdateBAR					updateBAR					= 5;
+//				SxSRRsp_Flags				sxSRRsp_Flags				= 6;
+}
+
+
+//Endmarker Packet
+message IPAddress {
+    bool    bitV4       = 1;
+    bool    bitV6       = 2;
+    bytes   ipv4Addr    = 3; //  4oct
+    bytes   ipv6Addr    = 4; // 16oct
+
+}
+message EndmarkerRequest {
+                IPAddress                   upf_address                 = 1;
+                uint32                      upf_teID                    = 2; //  4oct
+                IPAddress                   n3_upf_address              = 3;
+                IPAddress                   n3_gNB_address              = 4;
+                uint32                      n3_nNB_teID                 = 5; //  4oct
+}
+message EndmarkerResponse {
+                bool                        result                      = 1; // true:OK, false:NG
+}

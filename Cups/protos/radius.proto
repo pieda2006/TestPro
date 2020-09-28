@@ -1,0 +1,41 @@
+syntax="proto3";
+
+package radius;
+
+option java_multiple_files = true;
+option java_outer_classname = "n4ifProto";
+option java_package = "fivegc.smf.Service.UPF_Mng.model.RadiusMsg";
+
+import "google/protobuf/empty.proto";
+
+
+
+service RadiusMessages {
+	// Radius [ Request/Response : SBI -> CUPS_IF ]
+	rpc	RadiusCall(RadiusRequest) returns (RadiusResponse) {}
+}
+
+// Send to UPF Address
+message RadiusAddress {
+	bool	bitV4		= 1;
+	bool	bitV6		= 2;
+	bytes	ipv4Addr	= 3; //  4oct
+	bytes	ipv6Addr	= 4; // 16oct
+}
+
+message RadiusRequest {
+	RadiusAddress		upfAddr			= 1;
+	uint32			upf_teID		= 2; //  4oct
+	RadiusAddress		nasAddr		= 3;
+	uint32			nasPort		= 4;
+	RadiusAddress		radiusAddr		= 5;
+	uint32			radiusPort		= 6;
+	bytes			radiusSignal		= 7;
+	uint32			packetID   	 	= 8;
+}
+
+message RadiusResponse {
+	bytes			radiusSignal		= 1;
+}
+
+
