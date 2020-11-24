@@ -1,0 +1,4 @@
+https://istio.io/latest/blog/2018/v1alpha3-routing/#serviceentry
+https://qiita.com/HirokiSakonju/items/5b778281fbe9a2cde224
+https://tech.uzabase.com/entry/2018/11/26/110407
+https://istio.io/latest/blog/2019/egress-performance/
