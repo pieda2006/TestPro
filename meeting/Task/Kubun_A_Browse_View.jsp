@@ -370,7 +370,7 @@ if((((search_word_5 == null) || search_word_5.equals("")) || (db.getResult("text
    (((search_word_7 == null) || search_word_7.equals("")) || (Integer.parseInt(db.getResult("no")) == Integer.parseInt(search_word_7))) &&
    (((search_word_8 == null) || search_word_8.equals("")) ||  (db.getResult("username").equals(user) && search_word_8.equals("1")) || search_word_8.equals("0")) &&
    (((search_word_9 == null) || search_word_9.equals("")) || db.getResult("check1").equals(search_word_9_id)) &&
-   (db.getResult("check2").equals("0") || (db.getResult("check2").equals("1") && (db.getResult("username").equals(user) || db.getResult("username").equals("dummy"))))){
+   (db.getResult("check2").equals("0") /*|| (db.getResult("check2").equals("1") && (db.getResult("username").equals(user) || db.getResult("username").equals("dummy")))*/)){
 
 %>
 <tr>
