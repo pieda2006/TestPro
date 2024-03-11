@@ -215,10 +215,10 @@ file_Type = ".txt";
 }
 else if(header.indexOf(image5) != -1){
 file_Type = ".xls";
-}
+}*/
 else {
 file_Type = ".pdf";
-}*/
+}
 /*** バイトデータを格納するバッファ ***/
 ByteArrayOutputStream receivedBuffer = new ByteArrayOutputStream();
 file = Integer.parseInt(no.trim()) + file_Type;
