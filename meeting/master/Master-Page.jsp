@@ -61,6 +61,7 @@ db.closeDB();
 Day_Operation day = new Day_Operation();
 DB_Operation idDB = new DB_Operation();
 DB_Operation new_num = new DB_Operation();
+
 /*Tree sort_Tree = new Tree();
 Topic_Struct topic_struct = new Topic_Struct();*/
 
@@ -95,10 +96,10 @@ int size = 0;
 
 /*** 現在の日時を取得 ***/
 /*** 日付をシステム変数から取得するオブジェクト宣言 ***/
-GregorianCalendar cal = new GregorianCalendar();
+GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("JST"));
 Date currentdate = cal.getTime();
 String date = currentdate.toString();
-DateFormat df = DateFormat.getDateInstance();
+DateFormat df = new SimpleDateFormat("yyyy'/'MM'/'dd");
 SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy'/'MM'/'dd");
 db.getQuery("select master_auth from " + ClassDefine.user_info + " where user_id ='" + user + "'");
 if(db.getNext()){
@@ -130,24 +131,93 @@ plan_topic_date = request.getParameter("plan_topic_date[" + i + "]");
 plan_limit_date = request.getParameter("plan_limit_date[" + i + "]");
 shinchoku = request.getParameter("shinchoku[" + i + "]");
 shinchoku2 = request.getParameter("shinchoku2[" + i + "]");
-if(plan_topic_date == null || plan_topic_date.equals("")){
-plan_topic_date = "1111/11/11";
+
+DB_Operation date_ope = new DB_Operation();
+
+if (!user_id.equals("-")) {
+    date_ope.getQuery("select * from " + ClassDefine.topic_plan + " where id=" + topic_id + " order by date asc limit 1;");
+    if(date_ope.getNext()){
+        plan_topic_date = day.editDate(date_ope.getResult("date").substring(0,10));
+    } else {
+        plan_topic_date = "1111/11/11";
+    }
+} else {
+    date_ope.getQuery("select plan_topic_date from " + ClassDefine.topic_info + " WHERE topic_sub_id!=10 and kouban LIKE '" + kouban + "-%' order by plan_topic_date limit 1");
+    if(date_ope.getNext()){
+        plan_topic_date = day.editDate(date_ope.getResult("plan_topic_date").substring(0,10));
+    } else {
+        plan_topic_date = "1111/11/11";
+    }
 }
-if(plan_limit_date == null || plan_limit_date.equals("")){
+
+/*if(plan_topic_date == null || plan_topic_date.equals("")){
+    plan_topic_date = "1111/11/11";
+}*/
+if (!user_id.equals("-")) {
+    date_ope.getQuery("select * from " + ClassDefine.topic_plan + " where id=" + topic_id + " order by complete_date desc limit 1;");
+    if(date_ope.getNext()){
+        plan_limit_date = day.editDate(date_ope.getResult("date").substring(0,10));
+    } else {
+        plan_limit_date = "1111/11/11";
+    }
+} else {
+    date_ope.getQuery("select plan_limit_date from " + ClassDefine.topic_info + " WHERE topic_sub_id!=10 and kouban LIKE '" + kouban + "-%' order by plan_limit_date desc limit 1");
+    if(date_ope.getNext()){
+        plan_limit_date = day.editDate(date_ope.getResult("plan_limit_date").substring(0,10));
+    } else {
+        plan_limit_date = "1111/11/11";
+    }
+}
+
+/*if(plan_limit_date == null || plan_limit_date.equals("")){
 plan_limit_date = "1111/11/11";
-}
+}*/
+
 if(topic_date == null || topic_date.equals("")){
 topic_date = "1111/11/11";
 }
-if(time_limit == null || time_limit.equals("")){
-time_limit = "1111/11/11";
+
+if (!user_id.equals("-")) {
+    date_ope.getQuery("select * from " + ClassDefine.topic_report + " where id=" + topic_id + " order by complete_date desc limit 1;");
+    if(date_ope.getNext()){
+        if(shinchoku != null && !shinchoku.equals("") && shinchoku2 != null && !shinchoku2.equals("") &&  shinchoku.equals(shinchoku2)){
+            time_limit = day.editDate(date_ope.getResult("date").substring(0,10));
+        } else {
+            time_limit = "1111/11/11";
+        }
+    } else {
+        time_limit = "1111/11/11";
+    }
+} else {
+    date_ope.getQuery("select time_limit from " + ClassDefine.topic_info + " WHERE topic_sub_id!=10 and kouban LIKE '" + kouban + "-%' order by time_limit limit 1");
+    if (date_ope.getNext()){
+        if (!date_ope.getResult("time_limit").equals("1111-11-11")){
+            date_ope.getQuery("select time_limit from " + ClassDefine.topic_info + " WHERE topic_sub_id!=10 and kouban LIKE '" + kouban + "-%' order by time_limit desc limit 1");
+            if(date_ope.getNext()){
+                time_limit = day.editDate(date_ope.getResult("time_limit").substring(0,10));
+            } else {
+                time_limit = "1111/11/11";
+            }
+        } else {
+            time_limit = "1111/11/11";
+        }
+    }
 }
+
+/*if(time_limit == null || time_limit.equals("")){
+time_limit = "1111/11/11";
+}*/
+
+
 if(shinchoku == null || shinchoku.equals("")){
 shinchoku = "0";
 }
 if(shinchoku2 == null || shinchoku2.equals("")){
 shinchoku2 = "0";
 }
+
+date_ope.closeDB();
+
 if(state_id.equals("3")){
 if(topic_now.equals("0")){
 topic_now=topic_id;
@@ -182,7 +252,7 @@ db.exeQuery("update " + ClassDefine.topic_report + " set complete_date='" + date
 }
 db.exeQuery("update " + ClassDefine.topic_info + " set topic_sub_id=" + topic_sub_id + ",topic_name='" + topic_name + "',time_limit='" + day.undoDate(time_limit) + "',state_id=" + state_id + ",topic_date='" + day.undoDate(topic_date) + "',user_id='" + user_id + "',topic_delete=" + 0 + ",plan_topic_date ='" + day.undoDate(plan_topic_date) + "',plan_limit_date ='" + day.undoDate(plan_limit_date) + "', shinchoku = " + shinchoku + ",kouban = '" + kouban + "',shinchoku2 = " + shinchoku2 + " where topic_id=" + topic_id +  ";");
 } else {
-db.exeQuery("update " + ClassDefine.topic_info + " set topic_sub_id=" + topic_sub_id + ",topic_name='" + topic_name + "',kind_id=" + kind_id + ",time_limit='" + day.undoDate(time_limit) + "',state_id=" + state_id + ",topic_date='" + day.undoDate(topic_date) + "',user_id='" + user_id + "',topic_delete=" + 0 + ",plan_topic_date ='" + day.undoDate(plan_topic_date) + "',plan_limit_date ='" + day.undoDate(plan_limit_date) + "', shinchoku = " + shinchoku + ",kouban = '" + kouban + "',shinchoku2 = " + shinchoku2 + " where topic_id=" + topic_id +  ";");
+db.exeQuery("update " + ClassDefine.topic_info + " set topic_sub_id=" + topic_sub_id + ",topic_name='" + topic_name + "',kind_id=" + kind_id + ",time_limit='" + day.undoDate(time_limit) + "',state_id=" + state_id + ",topic_date='" + day.undoDate(/*topic_date*/date) + "',user_id='" + user_id + "',topic_delete=" + 0 + ",plan_topic_date ='" + day.undoDate(plan_topic_date) + "',plan_limit_date ='" + day.undoDate(plan_limit_date) + "', shinchoku = " + shinchoku + ",kouban = '" + kouban + "',shinchoku2 = " + shinchoku2 + " where topic_id=" + topic_id +  ";");
 }
 }
 }
@@ -584,7 +654,7 @@ if(calender != null && !calender.equals("") && calender.equals("1")){
 //--></SCRIPT>
 <%
 }
-if(currentdate.after(df.parse(day.editDate(db.getResult("plan_limit_date")))) && !db.getResult("state_id").equals("2")){
+if(currentdate.after(df.parse(day.editDate(db.getResult("plan_limit_date")))) && !db.getResult("state_id").equals("2") && !db.getResult("user_id").equals("-")){
 bgcolor=1;
 } else if(!db.getResult("state_id").equals("2")) {
 bgcolor=0;
@@ -854,7 +924,9 @@ i++;
 kindDB.closeDB();
 stateDB.closeDB();
 userDB.closeDB();
-new_num.closeDB();%>
+new_num.closeDB();
+idDB.closeDB();
+%>
 
 <%!
 /*** 2008/06/17 データの取得 メソッド start***/
